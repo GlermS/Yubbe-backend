@@ -1,0 +1,17 @@
+"use strict";
+exports.__esModule = true;
+var express = require("express");
+var bodyParser = require("body-parser");
+var cookieParser = require("cookie-parser");
+var signup_1 = require("./api/accounts/signup");
+var login_1 = require("./api/accounts/login");
+var session_1 = require("./api/accounts/session");
+var app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+var port = process.env.PORT || 5000;
+app.post('/api/signup', signup_1["default"]);
+app.post('/api/login', login_1["default"]);
+app.get('/api/session', session_1["default"]);
+app.listen(port, function () { return console.log("Listening on port " + port); });

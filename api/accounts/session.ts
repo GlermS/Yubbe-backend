@@ -6,7 +6,8 @@ export default async function Token(req: express.Request,res: express.Response){
     const authenticator = new TokenAuthenticator();
     
     const respo = await authenticator.verifyToken(req)
-    
+    res.setHeader("Access-Control-Allow-Origin", "*")
+
     if (respo.approved){
         res.status(201).json(respo)
         
@@ -20,6 +21,8 @@ export default async function Token(req: express.Request,res: express.Response){
             maxAge: 3600,
             path:'/'
         }))*/
+
+        
         res.json(respo)
     }
 }

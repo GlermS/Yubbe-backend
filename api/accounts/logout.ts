@@ -10,5 +10,7 @@ export default (req: express.Request, res: express.Response)=>{
         maxAge: 3600,
         path:'/'
     }))
+    res.setHeader("Access-Control-Allow-Origin", "*")
+
     res.redirect('/')
 }

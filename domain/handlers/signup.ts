@@ -15,7 +15,7 @@ class SignupHandler{
             const resp = await db.createNewAccount(name, email, password, authorization).then((data:UserInterface)=>{
                 //console.log(data)
                 if (data.approved){//process.env.AUTHENTICATION_KEY
-                    return {approved:true, name: data.name , authToken: jwt.sign({name:data.name, id: data.id, authorization: data.authorization},'ANAPIENAPWIEHAEPFAPEFAÇENFAJEJFNLALMALMFWEMWK', {expiresIn:'1h'})}
+                    return {approved:true, name: data.name , authToken: jwt.sign({name:data.name, id: data.id, authorization: data.authorization}, process.env.AUTHENTICATION_KEY || '0000', {expiresIn:'1h'})}
                 }else{
                     return {approved:false, name: '', authToken: '', message: 'Email já utilizado'}
                      }}

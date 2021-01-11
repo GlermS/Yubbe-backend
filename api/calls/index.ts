@@ -1,7 +1,7 @@
-import {NextApiRequest, NextApiResponse} from 'next';
-import CallsHandler from '../../../handlers/calls';
+import express = require('express');
+import CallsHandler from '../../domain/handlers/calls';
 
-export default async (req: NextApiRequest,res: NextApiResponse)=>{
+export default async (req: express.Request,res: express.Response)=>{
     const method = req.method
     switch (method){
         case 'GET':
@@ -11,9 +11,4 @@ export default async (req: NextApiRequest,res: NextApiResponse)=>{
             res.json(respo);
 
     }
-   
-    
-    
-    
-
 }

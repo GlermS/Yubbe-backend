@@ -15,7 +15,7 @@ class LoginAuthentication{
         const data = await this.verifyData(database, email, password);
 
         if (data.approved){
-            return {approved:true, name:data.name, authToken: jwt.sign({name:data.name, id: data.id, authorization: data.authorization},'ANAPIENAPWIEHAEPFAPEFAÇENFAJEJFNLALMALMFWEMWK', {expiresIn:'1h'})}
+            return {approved:true, name:data.name, authToken: jwt.sign({name:data.name, id: data.id, authorization: data.authorization},process.env.AUTHENTICATION_KEY || '0000', {expiresIn:'1h'})}
         }else{
             return {approved:false, name:'', authToken: ''}
         }

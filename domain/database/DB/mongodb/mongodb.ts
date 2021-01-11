@@ -25,7 +25,7 @@ class MongoDB implements DataBaseInterface{
     }
     async compareLoginData(email: string, password: string){
         const conn = await dbConnect()
-        const resp =await UserModel.find({email: email})
+        const resp =await UserModel.find({email: email}).maxTime(1000)
         try{
             const user = await compare(password, resp[0].password).then(isPasswordOk=>{
                 if(isPasswordOk){
@@ -45,9 +45,8 @@ class MongoDB implements DataBaseInterface{
         //console.log("Criando conta")
        
         var user = await hash(password,12).then(async(hash)=>{
-            //console.log(hash)
+            console.log(hash)
             const resp = await UserModel.create({name:name, email: email, password:hash,  authorization:authorization}).then(data=>{
-                
                 if(data!=undefined){
                     //console.log("User criado")
                     return new User(true, data.name, data.id, data.authorization)

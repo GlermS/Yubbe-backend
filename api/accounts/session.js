@@ -47,6 +47,7 @@ function Token(req, res) {
                     return [4 /*yield*/, authenticator.verifyToken(req)];
                 case 1:
                     respo = _a.sent();
+                    res.setHeader("Access-Control-Allow-Origin", "*");
                     if (respo.approved) {
                         res.status(201).json(respo);
                     }

@@ -64,6 +64,7 @@ exports["default"] = (function (req, res) { return __awaiter(void 0, void 0, voi
                     maxAge: 3600,
                     path: '/'
                 }));
+                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.json(response);
                 return [2 /*return*/];
         }

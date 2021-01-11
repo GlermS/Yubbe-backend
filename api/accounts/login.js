@@ -47,6 +47,7 @@ exports["default"] = (function (req, res) { return __awaiter(void 0, void 0, voi
                 return [4 /*yield*/, handler.authenticateData(req)];
             case 1:
                 respo = _a.sent();
+                res.setHeader("Access-Control-Allow-Origin", "*");
                 res.setHeader('Set-Cookie', cookie.serialize('authToken', respo.authToken, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV !== 'development',

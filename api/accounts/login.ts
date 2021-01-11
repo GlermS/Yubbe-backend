@@ -8,6 +8,7 @@ export default async (req: express.Request,res: express.Response)=>{
     const handler = new LoginHandler();
     
     const respo = await handler.authenticateData(req)
+    
     res.setHeader("Access-Control-Allow-Origin", "*")
 
     res.setHeader('Set-Cookie', cookie.serialize('authToken',respo.authToken,{

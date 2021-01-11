@@ -1,6 +1,7 @@
 import express = require('express');
 import bodyParser = require('body-parser');
 import cookieParser = require('cookie-parser');
+import cors = require('cors');
 
 
 import signup from './api/accounts/signup';
@@ -14,6 +15,7 @@ const app = express();
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 app.use(cookieParser())
+app.use(cors())
 
 const port = process.env.PORT || 5000;
 

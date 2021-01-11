@@ -26,7 +26,7 @@ class TokenAuthenticator {
             if(process.env.AUTHENTICATION_KEY){
                 console.log('Using env vars')
             }
-            var data = jwt.verify(req.cookies.authToken,'0000') as {[key: string]:string}
+            var data = jwt.verify(req.cookies.authToken,process.env.AUTHENTICATION_KEY||'0000') as {[key: string]:string}
             //console.log(data)
             return new User(true, data.name, data.id, data.authorization)
         }catch(error){

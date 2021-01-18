@@ -8,16 +8,19 @@ const CallSchema = new mongoose.Schema({
     theme:{
         type:String,
     },
-    moderator:{
-        type: String,
-        required:true,
+    moderatorId:{
+        type: {type: mongoose.Schema.Types.ObjectId, ref: "users"},
     },
     clients:{
-        type: Array,
+        type:[{type: mongoose.Schema.Types.ObjectId, ref: "users"}],
+        
+        default:[],
     },
     createdAt:{
         type: Date,
         default: Date.now,
     }
 })
+
+
 module.exports = mongoose.models.calls||mongoose.model('calls',CallSchema)

@@ -9,7 +9,7 @@ async function dbConnect(){
     }//
     const url = process.env.MONGO_URI || "mongodb+srv://backendYubbe:back49for007@yubbe.gjqnu.mongodb.net/Yubbe?retryWrites=true&w=majority"
     const db = await mongoose.connect(url, {connectTimeoutMS:1000,useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex:true}).then((connection) => {
-        console.log('Sucesso')
+        //console.log('Sucesso')
         connection.isConnected= connection.connections[0].readyState;
       })
       .catch(error => {

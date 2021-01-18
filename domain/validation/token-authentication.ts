@@ -21,12 +21,12 @@ interface UserShape{
 }
 class TokenAuthenticator {
     verifyToken(req):UserInterface{
-       // console.log(req.cookies)
+       //console.log(req.headers)
         try{
             if(process.env.AUTHENTICATION_KEY){
                 console.log('Using env vars')
             }
-            var data = jwt.verify(req.cookies.authToken,process.env.AUTHENTICATION_KEY||'0000') as {[key: string]:string}
+            var data = jwt.verify(req.headers.authtoken,process.env.AUTHENTICATION_KEY||'0000') as {[key: string]:string}
             //console.log(data)
             return new User(true, data.name, data.id, data.authorization)
         }catch(error){

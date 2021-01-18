@@ -13,11 +13,7 @@ export default async (req: express.Request,res: express.Response)=>{
         name: respo.name
     }
 
-    if(response.approved){
-        res.status(201);
-    }else{
-        res.status(401)
-    }
+    res.status(respo.code)
 
     res.setHeader('Set-Cookie', cookie.serialize('authToken',respo.authToken,{
         httpOnly:true,

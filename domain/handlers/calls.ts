@@ -7,14 +7,72 @@ class CallsHandler{
         const auth = this.authenticateData(req)
         if(auth.approved){
             const db = new MongoDB()
-            const calls =  await db.listCalls()
-            return {authorized:true, calls: calls}
+            const respo =  await db.listCalls()
+            return respo
         }else{
-            return {authorized:false}
+            return {code: 401, data: "Not allowed"}
         }
         
 
     }
+
+    async createCall(req:express.Request){
+        //console.log(req.body)
+        const auth = this.authenticateData(req)
+        //console.log(req)
+        if(auth.approved && auth.authorization === "adm"){
+            const db = new MongoDB()
+            const call =  await db.createCall(req.body.date, req.body.theme, req.body.moderator)
+            return call
+        }else{
+            return {code: 401, data: "Not allowed"}
+        }
+    }
+
+    async joinCall(req:express.Request){
+        const auth = this.authenticateData(req)
+        //console.log(auth)
+        //console.log(req.body)
+        if(auth.approved){
+            const db = new MongoDB()
+
+            
+            const call =  await db.joinCall(auth.id, req.body.callId).catch(console.log)
+            return call
+        }else{
+            return {code: 401,message: "Not allowed"}
+        }
+        
+    }
+    async moderateCall(req:express.Request){
+        const auth = this.authenticateData(req)
+        //console.log(auth)
+        //console.log(req.body)
+        if(auth.approved && (auth.authorization==='adm' || auth.authorization === 'moderator')){
+            const db = new MongoDB()
+            const call =  await db.moderateCall(auth.id, auth.authorization, req.body.callId).catch(console.log)
+            return call
+        }else{
+            return {code: 401,message: "Not allowed"}
+        }
+        
+    }
+
+    async listUsersCalls(req:express.Request){
+        const auth = this.authenticateData(req)
+        //console.log(auth)
+        //console.log(req.body)
+        if(auth.approved){
+            const db = new MongoDB()
+            const call =  await db.listUsersCalls(auth.id)//.catch(console.log)
+            return call
+        }else{
+            return {code: 401, data: "Not allowed"}
+        }
+        
+    }
+
+
     authenticateData(req: express.Request){
         const authenticator = new TokenAuthenticator();
         return authenticator.verifyToken(req)

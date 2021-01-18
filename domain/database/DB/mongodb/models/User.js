@@ -18,6 +18,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: 'client'
     },
+    weelyLimit:{
+        type:Number,
+        default:1
+    },
     createdAt:{
         type: Date,
         default: Date.now,

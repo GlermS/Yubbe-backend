@@ -18,4 +18,8 @@ app.post('/api/signup', signup_1["default"]);
 app.post('/api/login', login_1["default"]);
 app.get('/api/session', session_1["default"]);
 app.get('/api/calls', calls_1["default"]);
+app.get('/api/calls/mycalls', calls_1.listUsersCall);
+app.post('/api/calls', calls_1.createCall);
+app.post('/api/call/join', calls_1.joinCall);
+app.post('/api/call/moderate', calls_1.moderateCall);
 app.listen(port, function () { return console.log("Listening on port " + port); });

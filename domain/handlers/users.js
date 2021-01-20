@@ -78,7 +78,7 @@ var AdmUsersHandler = /** @class */ (function () {
                             user['weeklyLimit'] = userData.weeklyLimit;
                         }
                         if (userData.authorization) {
-                            if (['adm', 'modarator', 'client'].includes(userData.authorization)) {
+                            if (['adm', 'moderator', 'client'].includes(userData.authorization)) {
                                 user['authorization'] = userData.authorization;
                             }
                         }

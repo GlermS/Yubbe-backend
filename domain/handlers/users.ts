@@ -13,8 +13,8 @@ export class AdmUsersHandler{
             }else{
                 return {code: 401, data: "Not allowed"}
             }
-            
-    }
+        }
+
     updateUser = async (req:express.Request)=>{
         const auth = this.authenticateData(req)
         const userData = req.body.userData
@@ -40,8 +40,8 @@ export class AdmUsersHandler{
         }else{
             return {code: 401, data: "Not allowed"}
         }
-        
     }
+    
     changeUserPassword = async (req:express.Request)=>{
         const auth = this.authenticateData(req)
         const userData = req.body.userData

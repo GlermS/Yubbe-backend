@@ -2,6 +2,7 @@ import express = require('express');
 import bodyParser = require('body-parser');
 import cookieParser = require('cookie-parser');
 import cors = require('cors');
+require('dotenv').config()
 
 
 import signup from './api/accounts/signup';

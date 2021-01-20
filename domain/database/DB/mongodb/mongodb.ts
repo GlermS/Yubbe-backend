@@ -30,7 +30,6 @@ class MongoDB implements DataBaseInterface{
             //console.log(user)
             if(user.authorization==='adm'){
                 resp = {code:200, data: await UserModel.aggregate([{$project:{"_id":1,"weeklyLimit":1, "name":1, "email":1,"authorization":1}}])}
-                console.log(resp)
             }else{
                 resp = {code:401, data:"Only adm"}
             }
@@ -53,7 +52,6 @@ class MongoDB implements DataBaseInterface{
         }).catch((err) =>{
             resp = {code: 400, data:err.toString()}
             })
-        console.log(resp)
         return resp
     }
     
@@ -75,7 +73,6 @@ class MongoDB implements DataBaseInterface{
             }).catch((err) =>{
                 resp = {code: 400, data:err.toString()}
                 })
-        console.log(resp)
         return resp
     }
      async admDeleteUser(editorId:string, userId:string){
@@ -92,7 +89,6 @@ class MongoDB implements DataBaseInterface{
             }).catch((err) =>{
                 resp = {code: 400, data:err.toString()}
                 })
-        console.log(resp)
         return resp
     }
 
@@ -198,7 +194,6 @@ class MongoDB implements DataBaseInterface{
             var isNotRegistered = true;
             respM.every((call, id)=>{
                 if(weekNumber(call.date)===weekNumber(response.date)){
-                    console.log('Era para parar')
                     isNotRegistered = false;
                     return
                 }
@@ -217,7 +212,6 @@ class MongoDB implements DataBaseInterface{
         }else{
             resp = {code: 423, data: "The call is full"}
         }
-        console.log(resp)
         return resp
     }
 

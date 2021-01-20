@@ -4,6 +4,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
 var cors = require("cors");
+require('dotenv').config();
 var signup_1 = require("./api/accounts/signup");
 var login_1 = require("./api/accounts/login");
 var session_1 = require("./api/accounts/session");

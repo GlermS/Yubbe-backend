@@ -22,9 +22,81 @@ class User implements UserInterface{
 }
 
 class MongoDB implements DataBaseInterface{
-    constructor(){
+    async listUsers(userId:string){
+        dbConnect();
+        var resp:any
 
+        const authConfirmed = await UserModel.findOne({ _id: userId }).then(async (user) =>{
+            //console.log(user)
+            if(user.authorization==='adm'){
+                resp = {code:200, data: await UserModel.aggregate([{$project:{"_id":1,"weeklyLimit":1, "name":1, "email":1,"authorization":1}}])}
+                console.log(resp)
+            }else{
+                resp = {code:401, data:"Only adm"}
+            }
+        }).catch((err) =>{
+            resp = {code: 400, data:err.toString()}
+            })
+        return resp
     }
+    async admUpdateUser(editorId: string, userData: any){
+        dbConnect();
+        var resp:any;
+
+        console.log(userData)
+        await UserModel.findOne({'_id':editorId}).then(async (editor)=>{
+            if(editor.authorization==='adm'){
+                resp= {code:200, data: await UserModel.updateOne({'_id':userData.id},userData)}
+            }else{
+                resp = {code:401, data:"Only adm"}
+            }
+        }).catch((err) =>{
+            resp = {code: 400, data:err.toString()}
+            })
+        console.log(resp)
+        return resp
+    }
+    
+    async admUpdateUserPassword(editorId:string, userId:string, password:string){
+        dbConnect();
+        var resp:any;
+
+        await UserModel.findOne({'_id':editorId}).then(async (editor)=>{
+            if(editor.authorization==='adm'){
+                await hash(password,12).then(async(hash)=>{
+                    resp= {code:200, data: await UserModel.updateOne({'_id':userId},{password:hash})}
+                }).catch((err)=>{
+                        //console.log(err)
+                        resp = {code: 409 ,data: 'Deu ruim'}
+                         })
+            }else{
+                resp = {code:401, data:"Only adm"}
+            }
+            }).catch((err) =>{
+                resp = {code: 400, data:err.toString()}
+                })
+        console.log(resp)
+        return resp
+    }
+     async admDeleteUser(editorId:string, userId:string){
+        dbConnect();
+        var resp:any;
+
+        await UserModel.findOne({'_id':editorId}).then(async (editor)=>{
+            if(editor.authorization==='adm'){
+                resp= {code:200, data: await UserModel.deleteOne({'_id':userId})}
+                
+            }else{
+                resp = {code:401, data:"Only adm"}
+            }
+            }).catch((err) =>{
+                resp = {code: 400, data:err.toString()}
+                })
+        console.log(resp)
+        return resp
+    }
+
+
     async compareLoginData(email: string, password: string){
         const conn = await dbConnect()
         const resp =await UserModel.find({email: email})
@@ -167,14 +239,13 @@ class MongoDB implements DataBaseInterface{
             }
         }).catch((err) =>{
             console.log(err)
-})
-
-        
-        
+        })
         //console.log(resp)
         return resp
     }
 
+    
+    
 }
 
 export default MongoDB;

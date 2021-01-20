@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: 'client'
     },
-    weelyLimit:{
+    weeklyLimit:{
         type:Number,
         default:1
     },

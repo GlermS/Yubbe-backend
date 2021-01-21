@@ -41,8 +41,8 @@ app.put('/api/adm/user', updateUser)
 app.put('/api/adm/user/password', changeUserPassword)
 app.delete('/api/adm/user',deleteUser)
 
-app.get('/api/adm/call/:id',callInfo)
-app.put('/api/adm/call/:id',editCall)
+app.get('/api/adm/call',callInfo)
+app.put('/api/adm/call',editCall)
 
 
 

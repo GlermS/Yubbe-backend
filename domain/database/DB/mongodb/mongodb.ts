@@ -222,7 +222,7 @@ class MongoDB implements DataBaseInterface{
         return resp
     }
 
-    admCallInfo =async (editorId:string, callId:string) =>{
+    admCallInfo =async (editorId:string, callId:any) =>{
         dbConnect();
         var resp:any;
 

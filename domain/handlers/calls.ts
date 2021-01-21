@@ -88,7 +88,7 @@ export class AdmCallsHandler {
         //console.log(req.body)
         if(auth.approved){
             const db = new MongoDB()
-            const call =  await db.admCallInfo(auth.id, req.params.id)//.catch(console.log)
+            const call =  await db.admCallInfo(auth.id, req.query.id)//.catch(console.log)
             return call
         }else{
             return {code: 401, data: "Not allowed"}

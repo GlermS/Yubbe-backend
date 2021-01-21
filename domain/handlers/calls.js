@@ -152,7 +152,7 @@ var AdmCallsHandler = /** @class */ (function () {
                         auth = this.authenticateData(req);
                         if (!auth.approved) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.admCallInfo(auth.id, req.params.id)]; //.catch(console.log)
+                        return [4 /*yield*/, db.admCallInfo(auth.id, req.query.id)]; //.catch(console.log)
                     case 1:
                         call = _a.sent() //.catch(console.log)
                         ;

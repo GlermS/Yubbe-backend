@@ -30,6 +30,6 @@ app.get('/api/adm/validate', adm_2.checkEmail);
 app.put('/api/adm/user', adm_2.updateUser);
 app.put('/api/adm/user/password', adm_2.changeUserPassword);
 app["delete"]('/api/adm/user', adm_2.deleteUser);
-app.get('/api/adm/call/:id', adm_1["default"]);
-app.put('/api/adm/call/:id', adm_1.editCall);
+app.get('/api/adm/call', adm_1["default"]);
+app.put('/api/adm/call', adm_1.editCall);
 app.listen(port, function () { return console.log("Listening on port " + port); });

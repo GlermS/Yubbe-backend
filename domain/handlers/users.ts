@@ -64,7 +64,19 @@ export class AdmUsersHandler{
         }else{
             return {code: 401, data: "Not allowed"}
         }
-    }   
+    }
+
+    checkEmail = async (req:express.Request)=>{
+        const auth = this.authenticateData(req)
+        
+        if(auth.approved){
+            const db = new MongoDB()
+            const respo =  await db.admCheckEmail(auth.id,req.query.email)
+            return respo
+        }else{
+            return {code: 401, data: "Not allowed"}
+        }
+    }
 
     authenticateData(req: express.Request){
         const authenticator = new TokenAuthenticator();

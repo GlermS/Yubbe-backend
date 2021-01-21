@@ -36,84 +36,31 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.checkEmail = exports.deleteUser = exports.changeUserPassword = exports.updateUser = void 0;
-var users_1 = require("../../../domain/handlers/users");
-function getUsers(req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var handler, response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    handler = new users_1.AdmUsersHandler();
-                    return [4 /*yield*/, handler.listUsers(req)];
-                case 1:
-                    response = _a.sent();
-                    res.status(response.code).json(response.data);
-                    return [2 /*return*/];
-            }
-        });
+exports.editCall = void 0;
+var calls_1 = require("../../../domain/handlers/calls");
+var callInfo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var handler, respo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                handler = new calls_1.AdmCallsHandler();
+                return [4 /*yield*/, handler.callInfo(req)];
+            case 1:
+                respo = _a.sent();
+                res.status(respo.code).json(respo.data);
+                return [2 /*return*/];
+        }
     });
-}
-exports["default"] = getUsers;
-function updateUser(req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var handler, response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    handler = new users_1.AdmUsersHandler();
-                    return [4 /*yield*/, handler.updateUser(req)];
-                case 1:
-                    response = _a.sent();
-                    res.status(response.code).json(response.data);
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.updateUser = updateUser;
-function changeUserPassword(req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var handler, response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    handler = new users_1.AdmUsersHandler();
-                    return [4 /*yield*/, handler.changeUserPassword(req)];
-                case 1:
-                    response = _a.sent();
-                    res.status(response.code).json(response.data);
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.changeUserPassword = changeUserPassword;
-function deleteUser(req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var handler, response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    handler = new users_1.AdmUsersHandler();
-                    return [4 /*yield*/, handler.deleteUser(req)];
-                case 1:
-                    response = _a.sent();
-                    res.status(response.code).json(response.data);
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.deleteUser = deleteUser;
-function checkEmail(req, res) {
+}); };
+exports["default"] = callInfo;
+function editCall(req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var handler, respo;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    handler = new users_1.AdmUsersHandler();
-                    return [4 /*yield*/, handler.checkEmail(req)];
+                    handler = new calls_1.AdmCallsHandler();
+                    return [4 /*yield*/, handler.editCall(req)];
                 case 1:
                     respo = _a.sent();
                     res.status(respo.code).json(respo.data);
@@ -122,4 +69,4 @@ function checkEmail(req, res) {
         });
     });
 }
-exports.checkEmail = checkEmail;
+exports.editCall = editCall;

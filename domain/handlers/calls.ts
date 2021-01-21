@@ -80,3 +80,37 @@ class CallsHandler{
 }
 
 export default CallsHandler;
+
+export class AdmCallsHandler {
+    async callInfo(req:express.Request){
+        const auth = this.authenticateData(req)
+        //console.log(auth)
+        //console.log(req.body)
+        if(auth.approved){
+            const db = new MongoDB()
+            const call =  await db.admCallInfo(auth.id, req.params.id)//.catch(console.log)
+            return call
+        }else{
+            return {code: 401, data: "Not allowed"}
+        }
+
+    }
+
+    async editCall(req:express.Request){
+        const auth = this.authenticateData(req)
+        //console.log(auth)
+        //console.log(req.body)
+        if(auth.approved){
+            const db = new MongoDB()
+            const call =  await db.admUpdateCall(auth.id, req.body)
+            return call
+        }else{
+            return {code: 401, data: "Not allowed"}
+        }
+    }
+
+    authenticateData(req: express.Request){
+        const authenticator = new TokenAuthenticator();
+        return authenticator.verifyToken(req)
+    }
+}

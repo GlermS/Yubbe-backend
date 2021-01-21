@@ -9,7 +9,8 @@ import signup from './api/accounts/signup';
 import login from './api/accounts/login';
 import session from './api/accounts/session';
 import calls, {createCall, joinCall, moderateCall, listUsersCall} from './api/calls';
-import getUsers, {updateUser, changeUserPassword, deleteUser} from './api/accounts/adm'
+import callInfo, {editCall} from './api/calls/adm';
+import getUsers, {updateUser, changeUserPassword, deleteUser, checkEmail} from './api/accounts/adm'
 
 
 const app = express();
@@ -35,9 +36,14 @@ app.post('/api/call/join', joinCall)
 app.post('/api/call/moderate', moderateCall)
 
 app.get('/api/adm/users',getUsers)
+app.get('/api/adm/validate',checkEmail)
 app.put('/api/adm/user', updateUser)
 app.put('/api/adm/user/password', changeUserPassword)
 app.delete('/api/adm/user',deleteUser)
+
+app.get('/api/adm/call/:id',callInfo)
+app.put('/api/adm/call/:id',editCall)
+
 
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

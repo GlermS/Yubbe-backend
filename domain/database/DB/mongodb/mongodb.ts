@@ -27,7 +27,6 @@ class MongoDB implements DataBaseInterface{
         var resp:any
 
         const authConfirmed = await UserModel.findOne({ _id: userId }).then(async (user) =>{
-            //console.log(user)
             if(user.authorization==='adm'){
                 resp = {code:200, data: await UserModel.aggregate([{$project:{"_id":1,"weeklyLimit":1, "name":1, "email":1,"authorization":1}}])}
             }else{
@@ -42,7 +41,6 @@ class MongoDB implements DataBaseInterface{
         dbConnect();
         var resp:any;
 
-        console.log(userData)
         await UserModel.findOne({'_id':editorId}).then(async (editor)=>{
             if(editor.authorization==='adm'){
                 resp= {code:200, data: await UserModel.updateOne({'_id':userData.id},userData)}
@@ -64,7 +62,6 @@ class MongoDB implements DataBaseInterface{
                 await hash(password,12).then(async(hash)=>{
                     resp= {code:200, data: await UserModel.updateOne({'_id':userId},{password:hash})}
                 }).catch((err)=>{
-                        //console.log(err)
                         resp = {code: 409 ,data: 'Deu ruim'}
                          })
             }else{
@@ -111,26 +108,19 @@ class MongoDB implements DataBaseInterface{
         }
     }
     async createNewAccount(name:string, email: string, password: string):Promise<any>{
-        //console.log("Entrou")
         dbConnect()
-        //console.log("Criando conta")
        
         var user = await hash(password,12).then(async(hash)=>{
-            //console.log(hash)
             const resp = await UserModel.create({name:name, email: email, password:hash}).then(data=>{
                 if(data!=undefined){
-                    //.log("User criado")
                     return {code:201, data: new User(true, data.name, data.id, data.authorization)}
                     }
                 return {code: 401 ,data: new User(false, '', '', '')}
                 }).catch((err)=>{
-                //console.log(err)
                 return {code: 409 ,data: new User(false, '', '', '')}
                  })
-            //console.log("Resp")
             return resp
         })
-        //console.log(user)
         return user;   
     }
     
@@ -163,7 +153,6 @@ class MongoDB implements DataBaseInterface{
             date: {$gt:new Date()}
            }).then(data=>{return data})
 
-        //console.log(respM)
         return {code:200, data: {client: resp, moderator:respM}}
     }
 
@@ -176,14 +165,12 @@ class MongoDB implements DataBaseInterface{
     async joinCall(userId: String, callId: String){
         dbConnect()
         const response = await CallModel.findOne({ _id: callId }).then(call =>{
-            //console.log(call.clients)
             if(call.clients.length < 5){
                 return {isNotFull : true, date: call.date}
             }else{
                 return {isNotFull: false}
             }
         }).catch((err) =>{
-            //console.log(err)
             return {isNotFull: false}})
 
         var resp:any
@@ -219,10 +206,8 @@ class MongoDB implements DataBaseInterface{
         dbConnect()
         var resp:any
         const authConfirmed = await UserModel.findOne({ _id: userId }).then(async (user) =>{
-            //console.log(user)
             if(user.authorization===authorization){
                     const op = await CallModel.updateOne({ _id: callId, moderatorId:{$exists:false}},{moderatorId: user._id});
-                    //console.log(op)
                     if(op.nModified>0){
                         resp = {code: 201 ,data: "The moderator was registered"};
                     }else{
@@ -234,12 +219,107 @@ class MongoDB implements DataBaseInterface{
         }).catch((err) =>{
             console.log(err)
         })
-        //console.log(resp)
         return resp
     }
 
-    
-    
+    admCallInfo =async (editorId:string, callId:string) =>{
+        dbConnect();
+        var resp:any;
+
+        await UserModel.findOne({'_id':editorId}).then(async (editor)=>{
+            if(editor.authorization==='adm'){
+                resp= {code:200, data: await CallModel.aggregate([{$lookup: {
+                    from: 'users',
+                    localField: 'moderatorId',
+                    foreignField: '_id',
+                    as: 'moderator'
+                   }},
+                   {$lookup: {
+                    from: 'users',
+                    localField: 'clients',
+                    foreignField: '_id',
+                    as: 'clients'
+                   }},{
+                       $project:{
+                           "_id": 1,
+                           "clients.name": 1,
+                           "clients.email": 1,
+                           "moderator.name": 1,
+                           "moderator.email": 1,
+                           "date": 1,
+                           "theme": 1
+                       }
+                   },
+                   {$match:{"_id":mongoose.Types.ObjectId(callId)}}])}
+                
+            }else{
+                resp = {code:401, data:"Only adm"}
+            }
+            }).catch((err) =>{
+                resp = {code: 400, data:err.toString()}
+                })
+        return resp
+    }
+    admCheckEmail = async (checker:string, email: any) =>{
+        dbConnect();
+        var resp =false;
+
+        await UserModel.findOne({'_id':checker}).then(async (user)=>{
+            if(user.authorization==='adm'){
+                await UserModel.find({email}).then((result)=>{
+                    if(result.length>0){
+                        resp = true
+                    }
+                }
+                    
+                )
+            }})
+        return {code:200, data:resp}
+
+
+    }
+
+    admGetUserIdByEmail = async (email: Array<string>) =>{
+        var resp:any;
+
+        if(email.length>1){
+            await UserModel.aggregate([{$match:{email: {$in: email}}},{$project:{_id:1}}]).then(async (users)=>{
+                resp = users.map((user, i)=>{
+                    return mongoose.Types.ObjectId(user._id)
+                })
+            }).catch((err) =>{
+                resp = ""
+                })
+        }else{
+            await UserModel.findOne({email}).then(async (user)=>{
+                resp = mongoose.Types.ObjectId(user._id)
+            }).catch((err) =>{
+                resp = ""
+                })
+        }
+        
+        return resp
+
+    }
+    admUpdateCall =async (editorId:string, callData:any) =>{
+        dbConnect();
+        var resp:any;
+
+        await UserModel.findOne({'_id':editorId}).then(async (editor)=>{
+            if(editor.authorization==='adm'){
+                callData.clients = await this.admGetUserIdByEmail(callData.clients)
+                callData.moderator = await this.admGetUserIdByEmail([callData.moderator])
+                resp= {code:200, data:await CallModel.updateOne({"_id":callData._id},callData)}
+                
+            }else{
+                resp = {code:401, data:"Only adm"}
+            }
+            }).catch((err) =>{
+                resp = {code: 400, data:err.toString()}
+                })
+        return resp
+
+    }
 }
 
 export default MongoDB;

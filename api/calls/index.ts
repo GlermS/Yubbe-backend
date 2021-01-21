@@ -43,4 +43,3 @@ export async function listUsersCall(req: express.Request,res: express.Response){
 
     res.status(respo.code).json(respo.data);
 }
-

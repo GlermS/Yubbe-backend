@@ -50,3 +50,11 @@ export  async function deleteUser(req: express.Request,res: express.Response){
     res.status(response.code).json(response.data)
 
 }
+
+export async function checkEmail(req: express.Request,res: express.Response){
+   
+    const handler = new AdmUsersHandler();
+    const respo = await handler.checkEmail(req);
+
+    res.status(respo.code).json(respo.data);
+}

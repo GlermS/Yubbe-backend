@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+exports.AdmCallsHandler = void 0;
 var mongodb_1 = require("../database/DB/mongodb/mongodb");
 var token_authentication_1 = require("../validation/token-authentication");
 var CallsHandler = /** @class */ (function () {
@@ -139,3 +140,50 @@ var CallsHandler = /** @class */ (function () {
     return CallsHandler;
 }());
 exports["default"] = CallsHandler;
+var AdmCallsHandler = /** @class */ (function () {
+    function AdmCallsHandler() {
+    }
+    AdmCallsHandler.prototype.callInfo = function (req) {
+        return __awaiter(this, void 0, void 0, function () {
+            var auth, db, call;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        auth = this.authenticateData(req);
+                        if (!auth.approved) return [3 /*break*/, 2];
+                        db = new mongodb_1["default"]();
+                        return [4 /*yield*/, db.admCallInfo(auth.id, req.params.id)]; //.catch(console.log)
+                    case 1:
+                        call = _a.sent() //.catch(console.log)
+                        ;
+                        return [2 /*return*/, call];
+                    case 2: return [2 /*return*/, { code: 401, data: "Not allowed" }];
+                }
+            });
+        });
+    };
+    AdmCallsHandler.prototype.editCall = function (req) {
+        return __awaiter(this, void 0, void 0, function () {
+            var auth, db, call;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        auth = this.authenticateData(req);
+                        if (!auth.approved) return [3 /*break*/, 2];
+                        db = new mongodb_1["default"]();
+                        return [4 /*yield*/, db.admUpdateCall(auth.id, req.body)];
+                    case 1:
+                        call = _a.sent();
+                        return [2 /*return*/, call];
+                    case 2: return [2 /*return*/, { code: 401, data: "Not allowed" }];
+                }
+            });
+        });
+    };
+    AdmCallsHandler.prototype.authenticateData = function (req) {
+        var authenticator = new token_authentication_1["default"]();
+        return authenticator.verifyToken(req);
+    };
+    return AdmCallsHandler;
+}());
+exports.AdmCallsHandler = AdmCallsHandler;

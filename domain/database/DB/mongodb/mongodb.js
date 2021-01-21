@@ -53,6 +53,170 @@ var User = /** @class */ (function () {
 }());
 var MongoDB = /** @class */ (function () {
     function MongoDB() {
+        var _this = this;
+        this.admCallInfo = function (editorId, callId) { return __awaiter(_this, void 0, void 0, function () {
+            var resp;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dbConnect();
+                        return [4 /*yield*/, UserModel.findOne({ '_id': editorId }).then(function (editor) { return __awaiter(_this, void 0, void 0, function () {
+                                var _a;
+                                return __generator(this, function (_b) {
+                                    switch (_b.label) {
+                                        case 0:
+                                            if (!(editor.authorization === 'adm')) return [3 /*break*/, 2];
+                                            _a = { code: 200 };
+                                            return [4 /*yield*/, CallModel.aggregate([{ $lookup: {
+                                                            from: 'users',
+                                                            localField: 'moderatorId',
+                                                            foreignField: '_id',
+                                                            as: 'moderator'
+                                                        } },
+                                                    { $lookup: {
+                                                            from: 'users',
+                                                            localField: 'clients',
+                                                            foreignField: '_id',
+                                                            as: 'clients'
+                                                        } }, {
+                                                        $project: {
+                                                            "_id": 1,
+                                                            "clients.name": 1,
+                                                            "clients.email": 1,
+                                                            "moderator.name": 1,
+                                                            "moderator.email": 1,
+                                                            "date": 1,
+                                                            "theme": 1
+                                                        }
+                                                    },
+                                                    { $match: { "_id": mongoose.Types.ObjectId(callId) } }])];
+                                        case 1:
+                                            resp = (_a.data = _b.sent(), _a);
+                                            return [3 /*break*/, 3];
+                                        case 2:
+                                            resp = { code: 401, data: "Only adm" };
+                                            _b.label = 3;
+                                        case 3: return [2 /*return*/];
+                                    }
+                                });
+                            }); })["catch"](function (err) {
+                                resp = { code: 400, data: err.toString() };
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, resp];
+                }
+            });
+        }); };
+        this.admCheckEmail = function (checker, email) { return __awaiter(_this, void 0, void 0, function () {
+            var resp;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dbConnect();
+                        resp = false;
+                        return [4 /*yield*/, UserModel.findOne({ '_id': checker }).then(function (user) { return __awaiter(_this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            if (!(user.authorization === 'adm')) return [3 /*break*/, 2];
+                                            return [4 /*yield*/, UserModel.find({ email: email }).then(function (result) {
+                                                    if (result.length > 0) {
+                                                        resp = true;
+                                                    }
+                                                })];
+                                        case 1:
+                                            _a.sent();
+                                            _a.label = 2;
+                                        case 2: return [2 /*return*/];
+                                    }
+                                });
+                            }); })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, { code: 200, data: resp }];
+                }
+            });
+        }); };
+        this.admGetUserIdByEmail = function (email) { return __awaiter(_this, void 0, void 0, function () {
+            var resp;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(email.length > 1)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, UserModel.aggregate([{ $match: { email: { $in: email } } }, { $project: { _id: 1 } }]).then(function (users) { return __awaiter(_this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    resp = users.map(function (user, i) {
+                                        return mongoose.Types.ObjectId(user._id);
+                                    });
+                                    return [2 /*return*/];
+                                });
+                            }); })["catch"](function (err) {
+                                resp = "";
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, UserModel.findOne({ email: email }).then(function (user) { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                resp = mongoose.Types.ObjectId(user._id);
+                                return [2 /*return*/];
+                            });
+                        }); })["catch"](function (err) {
+                            resp = "";
+                        })];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, resp];
+                }
+            });
+        }); };
+        this.admUpdateCall = function (editorId, callData) { return __awaiter(_this, void 0, void 0, function () {
+            var resp;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dbConnect();
+                        return [4 /*yield*/, UserModel.findOne({ '_id': editorId }).then(function (editor) { return __awaiter(_this, void 0, void 0, function () {
+                                var _a, _b;
+                                var _c;
+                                return __generator(this, function (_d) {
+                                    switch (_d.label) {
+                                        case 0:
+                                            if (!(editor.authorization === 'adm')) return [3 /*break*/, 4];
+                                            _a = callData;
+                                            return [4 /*yield*/, this.admGetUserIdByEmail(callData.clients)];
+                                        case 1:
+                                            _a.clients = _d.sent();
+                                            _b = callData;
+                                            return [4 /*yield*/, this.admGetUserIdByEmail([callData.moderator])];
+                                        case 2:
+                                            _b.moderator = _d.sent();
+                                            _c = { code: 200 };
+                                            return [4 /*yield*/, CallModel.updateOne({ "_id": callData._id }, callData)];
+                                        case 3:
+                                            resp = (_c.data = _d.sent(), _c);
+                                            return [3 /*break*/, 5];
+                                        case 4:
+                                            resp = { code: 401, data: "Only adm" };
+                                            _d.label = 5;
+                                        case 5: return [2 /*return*/];
+                                    }
+                                });
+                            }); })["catch"](function (err) {
+                                resp = { code: 400, data: err.toString() };
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, resp];
+                }
+            });
+        }); };
     }
     MongoDB.prototype.listUsers = function (userId) {
         return __awaiter(this, void 0, void 0, function () {
@@ -97,7 +261,6 @@ var MongoDB = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         dbConnect();
-                        console.log(userData);
                         return [4 /*yield*/, UserModel.findOne({ '_id': editorId }).then(function (editor) { return __awaiter(_this, void 0, void 0, function () {
                                 var _a;
                                 return __generator(this, function (_b) {
@@ -152,7 +315,6 @@ var MongoDB = /** @class */ (function () {
                                                         }
                                                     });
                                                 }); })["catch"](function (err) {
-                                                    //console.log(err)
                                                     resp = { code: 409, data: 'Deu ruim' };
                                                 })];
                                         case 1:
@@ -249,7 +411,6 @@ var MongoDB = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        //console.log("Entrou")
                         dbConnect();
                         return [4 /*yield*/, bcrypt_1.hash(password, 12).then(function (hash) { return __awaiter(_this, void 0, void 0, function () {
                                 var resp;
@@ -257,28 +418,20 @@ var MongoDB = /** @class */ (function () {
                                     switch (_a.label) {
                                         case 0: return [4 /*yield*/, UserModel.create({ name: name, email: email, password: hash }).then(function (data) {
                                                 if (data != undefined) {
-                                                    //.log("User criado")
                                                     return { code: 201, data: new User(true, data.name, data.id, data.authorization) };
                                                 }
                                                 return { code: 401, data: new User(false, '', '', '') };
                                             })["catch"](function (err) {
-                                                //console.log(err)
                                                 return { code: 409, data: new User(false, '', '', '') };
-                                            })
-                                            //console.log("Resp")
-                                        ];
+                                            })];
                                         case 1:
                                             resp = _a.sent();
-                                            //console.log("Resp")
                                             return [2 /*return*/, resp];
                                     }
                                 });
-                            }); })
-                            //console.log(user)
-                        ];
+                            }); })];
                     case 1:
                         user = _a.sent();
-                        //console.log(user)
                         return [2 /*return*/, user];
                 }
             });
@@ -325,12 +478,9 @@ var MongoDB = /** @class */ (function () {
                         return [4 /*yield*/, CallModel.find({
                                 "moderatorId": mongoose.Types.ObjectId(userId),
                                 date: { $gt: new Date() }
-                            }).then(function (data) { return data; })
-                            //console.log(respM)
-                        ];
+                            }).then(function (data) { return data; })];
                     case 2:
                         respM = _a.sent();
-                        //console.log(respM)
                         return [2 /*return*/, { code: 200, data: { client: resp, moderator: respM } }];
                 }
             });
@@ -359,7 +509,6 @@ var MongoDB = /** @class */ (function () {
                     case 0:
                         dbConnect();
                         return [4 /*yield*/, CallModel.findOne({ _id: callId }).then(function (call) {
-                                //console.log(call.clients)
                                 if (call.clients.length < 5) {
                                     return { isNotFull: true, date: call.date };
                                 }
@@ -367,7 +516,6 @@ var MongoDB = /** @class */ (function () {
                                     return { isNotFull: false };
                                 }
                             })["catch"](function (err) {
-                                //console.log(err)
                                 return { isNotFull: false };
                             })];
                     case 1:
@@ -425,7 +573,6 @@ var MongoDB = /** @class */ (function () {
                                             return [4 /*yield*/, CallModel.updateOne({ _id: callId, moderatorId: { $exists: false } }, { moderatorId: user._id })];
                                         case 1:
                                             op = _a.sent();
-                                            //console.log(op)
                                             if (op.nModified > 0) {
                                                 resp = { code: 201, data: "The moderator was registered" };
                                             }
@@ -441,12 +588,9 @@ var MongoDB = /** @class */ (function () {
                                 });
                             }); })["catch"](function (err) {
                                 console.log(err);
-                            })
-                            //console.log(resp)
-                        ];
+                            })];
                     case 1:
                         authConfirmed = _a.sent();
-                        //console.log(resp)
                         return [2 /*return*/, resp];
                 }
             });

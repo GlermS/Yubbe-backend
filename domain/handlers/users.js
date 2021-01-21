@@ -124,6 +124,22 @@ var AdmUsersHandler = /** @class */ (function () {
                 }
             });
         }); };
+        this.checkEmail = function (req) { return __awaiter(_this, void 0, void 0, function () {
+            var auth, db, respo;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        auth = this.authenticateData(req);
+                        if (!auth.approved) return [3 /*break*/, 2];
+                        db = new mongodb_1["default"]();
+                        return [4 /*yield*/, db.admCheckEmail(auth.id, req.query.email)];
+                    case 1:
+                        respo = _a.sent();
+                        return [2 /*return*/, respo];
+                    case 2: return [2 /*return*/, { code: 401, data: "Not allowed" }];
+                }
+            });
+        }); };
     }
     AdmUsersHandler.prototype.authenticateData = function (req) {
         var authenticator = new token_authentication_1["default"]();

@@ -64,7 +64,7 @@ var LoginAuthentication = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         if (data.approved) {
-                            return [2 /*return*/, { approved: true, name: data.name, authToken: jwt.sign({ name: data.name, id: data.id, authorization: data.authorization }, process.env.AUTHENTICATION_KEY || '0000', { expiresIn: '1h' }) }];
+                            return [2 /*return*/, { approved: true, name: data.name, authToken: jwt.sign({ name: data.name, id: data.id, authorization: data.authorization }, process.env.AUTHENTICATION_KEY, { expiresIn: '24h' }) }];
                         }
                         else {
                             return [2 /*return*/, { approved: false, name: '', authToken: '' }];

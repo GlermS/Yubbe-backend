@@ -19,3 +19,20 @@ export async function editCall(req: express.Request,res: express.Response){
     res.status(respo.code).json(respo.data);
 }
 
+export async function deleteCall(req: express.Request,res: express.Response){
+   
+    const handler = new AdmCallsHandler();
+    const respo = await handler.deleteCall(req);
+
+    res.status(respo.code).json(respo.data);
+}
+
+export async function addUserToCall(req: express.Request,res: express.Response){
+   
+    const handler = new AdmCallsHandler();
+    const respo = await handler.addUserToCall(req);
+
+    res.status(respo.code).json(respo.data);
+}
+
+

@@ -22,7 +22,8 @@ class CallsHandler{
         //console.log(req)
         if(auth.approved && auth.authorization === "adm"){
             const db = new MongoDB()
-            const call =  await db.createCall(req.body.date, req.body.theme, req.body.moderator)
+            console.log(req.body)
+            const call =  await db.createCall(req.body)
             return call
         }else{
             return {code: 401, data: "Not allowed"}
@@ -102,12 +103,40 @@ export class AdmCallsHandler {
         //console.log(req.body)
         if(auth.approved){
             const db = new MongoDB()
-            const call =  await db.admUpdateCall(auth.id, req.body)
+            const call =  await db.admUpdateCall(auth.id,req.query.id, req.body)
             return call
         }else{
             return {code: 401, data: "Not allowed"}
         }
     }
+
+    async deleteCall(req:express.Request){
+        const auth = this.authenticateData(req)
+        //console.log(auth)
+        //console.log(req.body)
+        if(auth.approved){
+            const db = new MongoDB()
+            const call =  await db.admDeleteCall(auth.id, req.query.id)
+            return call
+        }else{
+            return {code: 401, data: "Not allowed"}
+        }
+    }
+
+
+    async addUserToCall(req:express.Request){
+        const auth = this.authenticateData(req)
+        //console.log(auth)
+        //console.log(req.body)
+        if(auth.approved){
+            const db = new MongoDB()
+            const call =  await db.admCallAddClient(auth.id,req.body.email, req.query.id)
+            return call
+        }else{
+            return {code: 401, data: "Not allowed"}
+        }
+    }
+    
 
     authenticateData(req: express.Request){
         const authenticator = new TokenAuthenticator();

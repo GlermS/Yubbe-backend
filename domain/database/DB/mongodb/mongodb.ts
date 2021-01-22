@@ -156,10 +156,18 @@ class MongoDB implements DataBaseInterface{
         return {code:200, data: {client: resp, moderator:respM}}
     }
 
-    async createCall(date: Date, theme: String, moderator: String, ){
+    async createCall(callData:any){
         dbConnect()
-        const resp = await CallModel.create({date, theme, moderator}).then((data)=>{return data}).catch((err)=>{return {error: err.toString()}})
-        return {code:201, data: resp}
+        var data = {}
+        
+        if(callData.theme){
+            data['theme'] = callData.theme
+        }
+        if(callData.date){
+            data['date'] =callData.date
+        }
+        const resp = await CallModel.create(data).then((data)=>{return {code:201, data}}).catch((err)=>{return {code: 404, data: err.toString()}})
+        return resp
     }
 
     async joinCall(userId: String, callId: String){
@@ -260,15 +268,16 @@ class MongoDB implements DataBaseInterface{
                 })
         return resp
     }
+
     admCheckEmail = async (checker:string, email: any) =>{
         dbConnect();
-        var resp =false;
+        var resp ={registered:false, name:''};
 
         await UserModel.findOne({'_id':checker}).then(async (user)=>{
             if(user.authorization==='adm'){
                 await UserModel.find({email}).then((result)=>{
                     if(result.length>0){
-                        resp = true
+                        resp = {registered:true, name:result[0].name}
                     }
                 }
                     
@@ -287,29 +296,37 @@ class MongoDB implements DataBaseInterface{
                 resp = users.map((user, i)=>{
                     return mongoose.Types.ObjectId(user._id)
                 })
-            }).catch((err) =>{
-                resp = ""
-                })
+            })
         }else{
             await UserModel.findOne({email}).then(async (user)=>{
                 resp = mongoose.Types.ObjectId(user._id)
-            }).catch((err) =>{
-                resp = ""
-                })
+            })
         }
-        
+        console.log(resp)
         return resp
 
     }
-    admUpdateCall =async (editorId:string, callData:any) =>{
+    admUpdateCall =async (editorId:string, callId:any, callData:any) =>{
         dbConnect();
         var resp:any;
 
         await UserModel.findOne({'_id':editorId}).then(async (editor)=>{
             if(editor.authorization==='adm'){
-                callData.clients = await this.admGetUserIdByEmail(callData.clients)
-                callData.moderator = await this.admGetUserIdByEmail([callData.moderator])
-                resp= {code:200, data:await CallModel.updateOne({"_id":callData._id},callData)}
+                var data = {}
+                if(callData.clients){
+                    data['clients'] = await this.admGetUserIdByEmail(callData.clients)
+                }
+                if(callData.moderator){
+                    data['moderatorId'] = await this.admGetUserIdByEmail([callData.moderator])
+                }
+                if(callData.theme){
+                    data['theme'] = callData.theme
+                }
+                if(callData.date){
+                    data['date'] =callData.date
+                }
+                console.log(data)
+                resp= {code:200, data:await CallModel.updateOne({"_id":callId},data)}
                 
             }else{
                 resp = {code:401, data:"Only adm"}
@@ -318,7 +335,49 @@ class MongoDB implements DataBaseInterface{
                 resp = {code: 400, data:err.toString()}
                 })
         return resp
+    }
 
+    async admCallAddClient(editorId:string ,userEmail: any, callId: any){
+        dbConnect()
+        const response = await CallModel.findOne({ _id: callId }).then(call =>{
+            if(call.clients.length < process.env.CALL_LIMIT){
+                return {isNotFull : true}
+            }else{
+                return {isNotFull: false}
+            }
+        }).catch((err) =>{
+            return {isNotFull: false}})
+
+        var resp:any
+        if(response.isNotFull){
+            await UserModel.findOne({'_id':editorId}).then(async (editor)=>{
+                const userid =await this.admGetUserIdByEmail([userEmail])
+                const respM = await CallModel.updateOne({_id:callId},{$addToSet:{clients:userid}})
+                resp = {code:200, data:respM}
+            }).catch((err) =>{
+                resp = {code:405, data:err.toString()}
+            })  
+        }else{
+            resp = {code: 423, data: "The call is full"}
+        }
+        return resp
+    }
+
+    admDeleteCall = async (editorId:string, callId:any) =>{
+        dbConnect();
+        var resp:any;
+
+        await UserModel.findOne({'_id':editorId}).then(async (editor)=>{
+            if(editor.authorization==='adm'){
+                resp= {code:200, data:await CallModel.deleteOne({"_id":callId})}
+                
+            }else{
+                resp = {code:401, data:"Only adm"}
+            }
+            }).catch((err) =>{
+                resp = {code: 400, data:err.toString()}
+                })
+        return resp
     }
 }
 

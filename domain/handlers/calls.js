@@ -69,7 +69,8 @@ var CallsHandler = /** @class */ (function () {
                         auth = this.authenticateData(req);
                         if (!(auth.approved && auth.authorization === "adm")) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.createCall(req.body.date, req.body.theme, req.body.moderator)];
+                        console.log(req.body);
+                        return [4 /*yield*/, db.createCall(req.body)];
                     case 1:
                         call = _a.sent();
                         return [2 /*return*/, call];
@@ -171,7 +172,43 @@ var AdmCallsHandler = /** @class */ (function () {
                         auth = this.authenticateData(req);
                         if (!auth.approved) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.admUpdateCall(auth.id, req.body)];
+                        return [4 /*yield*/, db.admUpdateCall(auth.id, req.query.id, req.body)];
+                    case 1:
+                        call = _a.sent();
+                        return [2 /*return*/, call];
+                    case 2: return [2 /*return*/, { code: 401, data: "Not allowed" }];
+                }
+            });
+        });
+    };
+    AdmCallsHandler.prototype.deleteCall = function (req) {
+        return __awaiter(this, void 0, void 0, function () {
+            var auth, db, call;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        auth = this.authenticateData(req);
+                        if (!auth.approved) return [3 /*break*/, 2];
+                        db = new mongodb_1["default"]();
+                        return [4 /*yield*/, db.admDeleteCall(auth.id, req.query.id)];
+                    case 1:
+                        call = _a.sent();
+                        return [2 /*return*/, call];
+                    case 2: return [2 /*return*/, { code: 401, data: "Not allowed" }];
+                }
+            });
+        });
+    };
+    AdmCallsHandler.prototype.addUserToCall = function (req) {
+        return __awaiter(this, void 0, void 0, function () {
+            var auth, db, call;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        auth = this.authenticateData(req);
+                        if (!auth.approved) return [3 /*break*/, 2];
+                        db = new mongodb_1["default"]();
+                        return [4 /*yield*/, db.admCallAddClient(auth.id, req.body.email, req.query.id)];
                     case 1:
                         call = _a.sent();
                         return [2 /*return*/, call];

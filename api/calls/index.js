@@ -59,6 +59,7 @@ function createCall(req, res) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    console.log(req.body);
                     handler = new calls_1["default"]();
                     return [4 /*yield*/, handler.createCall(req)];
                 case 1:

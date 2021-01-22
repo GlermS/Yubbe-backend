@@ -116,7 +116,7 @@ var MongoDB = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         dbConnect();
-                        resp = false;
+                        resp = { registered: false, name: '' };
                         return [4 /*yield*/, UserModel.findOne({ '_id': checker }).then(function (user) { return __awaiter(_this, void 0, void 0, function () {
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
@@ -124,7 +124,7 @@ var MongoDB = /** @class */ (function () {
                                             if (!(user.authorization === 'adm')) return [3 /*break*/, 2];
                                             return [4 /*yield*/, UserModel.find({ email: email }).then(function (result) {
                                                     if (result.length > 0) {
-                                                        resp = true;
+                                                        resp = { registered: true, name: result[0].name };
                                                     }
                                                 })];
                                         case 1:
@@ -154,9 +154,7 @@ var MongoDB = /** @class */ (function () {
                                     });
                                     return [2 /*return*/];
                                 });
-                            }); })["catch"](function (err) {
-                                resp = "";
-                            })];
+                            }); })];
                     case 1:
                         _a.sent();
                         return [3 /*break*/, 4];
@@ -165,17 +163,17 @@ var MongoDB = /** @class */ (function () {
                                 resp = mongoose.Types.ObjectId(user._id);
                                 return [2 /*return*/];
                             });
-                        }); })["catch"](function (err) {
-                            resp = "";
-                        })];
+                        }); })];
                     case 3:
                         _a.sent();
                         _a.label = 4;
-                    case 4: return [2 /*return*/, resp];
+                    case 4:
+                        console.log(resp);
+                        return [2 /*return*/, resp];
                 }
             });
         }); };
-        this.admUpdateCall = function (editorId, callData) { return __awaiter(_this, void 0, void 0, function () {
+        this.admUpdateCall = function (editorId, callId, callData) { return __awaiter(_this, void 0, void 0, function () {
             var resp;
             var _this = this;
             return __generator(this, function (_a) {
@@ -183,29 +181,78 @@ var MongoDB = /** @class */ (function () {
                     case 0:
                         dbConnect();
                         return [4 /*yield*/, UserModel.findOne({ '_id': editorId }).then(function (editor) { return __awaiter(_this, void 0, void 0, function () {
-                                var _a, _b;
-                                var _c;
-                                return __generator(this, function (_d) {
-                                    switch (_d.label) {
+                                var data, _a, _b, _c, _d;
+                                var _e;
+                                return __generator(this, function (_f) {
+                                    switch (_f.label) {
                                         case 0:
-                                            if (!(editor.authorization === 'adm')) return [3 /*break*/, 4];
-                                            _a = callData;
+                                            if (!(editor.authorization === 'adm')) return [3 /*break*/, 6];
+                                            data = {};
+                                            if (!callData.clients) return [3 /*break*/, 2];
+                                            _a = data;
+                                            _b = 'clients';
                                             return [4 /*yield*/, this.admGetUserIdByEmail(callData.clients)];
                                         case 1:
-                                            _a.clients = _d.sent();
-                                            _b = callData;
-                                            return [4 /*yield*/, this.admGetUserIdByEmail([callData.moderator])];
+                                            _a[_b] = _f.sent();
+                                            _f.label = 2;
                                         case 2:
-                                            _b.moderator = _d.sent();
-                                            _c = { code: 200 };
-                                            return [4 /*yield*/, CallModel.updateOne({ "_id": callData._id }, callData)];
+                                            if (!callData.moderator) return [3 /*break*/, 4];
+                                            _c = data;
+                                            _d = 'moderatorId';
+                                            return [4 /*yield*/, this.admGetUserIdByEmail([callData.moderator])];
                                         case 3:
-                                            resp = (_c.data = _d.sent(), _c);
-                                            return [3 /*break*/, 5];
+                                            _c[_d] = _f.sent();
+                                            _f.label = 4;
                                         case 4:
+                                            if (callData.theme) {
+                                                data['theme'] = callData.theme;
+                                            }
+                                            if (callData.date) {
+                                                data['date'] = callData.date;
+                                            }
+                                            console.log(data);
+                                            _e = { code: 200 };
+                                            return [4 /*yield*/, CallModel.updateOne({ "_id": callId }, data)];
+                                        case 5:
+                                            resp = (_e.data = _f.sent(), _e);
+                                            return [3 /*break*/, 7];
+                                        case 6:
                                             resp = { code: 401, data: "Only adm" };
-                                            _d.label = 5;
-                                        case 5: return [2 /*return*/];
+                                            _f.label = 7;
+                                        case 7: return [2 /*return*/];
+                                    }
+                                });
+                            }); })["catch"](function (err) {
+                                resp = { code: 400, data: err.toString() };
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, resp];
+                }
+            });
+        }); };
+        this.admDeleteCall = function (editorId, callId) { return __awaiter(_this, void 0, void 0, function () {
+            var resp;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dbConnect();
+                        return [4 /*yield*/, UserModel.findOne({ '_id': editorId }).then(function (editor) { return __awaiter(_this, void 0, void 0, function () {
+                                var _a;
+                                return __generator(this, function (_b) {
+                                    switch (_b.label) {
+                                        case 0:
+                                            if (!(editor.authorization === 'adm')) return [3 /*break*/, 2];
+                                            _a = { code: 200 };
+                                            return [4 /*yield*/, CallModel.deleteOne({ "_id": callId })];
+                                        case 1:
+                                            resp = (_a.data = _b.sent(), _a);
+                                            return [3 /*break*/, 3];
+                                        case 2:
+                                            resp = { code: 401, data: "Only adm" };
+                                            _b.label = 3;
+                                        case 3: return [2 /*return*/];
                                     }
                                 });
                             }); })["catch"](function (err) {
@@ -486,17 +533,24 @@ var MongoDB = /** @class */ (function () {
             });
         });
     };
-    MongoDB.prototype.createCall = function (date, theme, moderator) {
+    MongoDB.prototype.createCall = function (callData) {
         return __awaiter(this, void 0, void 0, function () {
-            var resp;
+            var data, resp;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         dbConnect();
-                        return [4 /*yield*/, CallModel.create({ date: date, theme: theme, moderator: moderator }).then(function (data) { return data; })["catch"](function (err) { return { error: err.toString() }; })];
+                        data = {};
+                        if (callData.theme) {
+                            data['theme'] = callData.theme;
+                        }
+                        if (callData.date) {
+                            data['date'] = callData.date;
+                        }
+                        return [4 /*yield*/, CallModel.create(data).then(function (data) { return { code: 201, data: data }; })["catch"](function (err) { return { code: 404, data: err.toString() }; })];
                     case 1:
                         resp = _a.sent();
-                        return [2 /*return*/, { code: 201, data: resp }];
+                        return [2 /*return*/, resp];
                 }
             });
         });
@@ -592,6 +646,55 @@ var MongoDB = /** @class */ (function () {
                     case 1:
                         authConfirmed = _a.sent();
                         return [2 /*return*/, resp];
+                }
+            });
+        });
+    };
+    MongoDB.prototype.admCallAddClient = function (editorId, userEmail, callId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response, resp;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        dbConnect();
+                        return [4 /*yield*/, CallModel.findOne({ _id: callId }).then(function (call) {
+                                if (call.clients.length < process.env.CALL_LIMIT) {
+                                    return { isNotFull: true };
+                                }
+                                else {
+                                    return { isNotFull: false };
+                                }
+                            })["catch"](function (err) {
+                                return { isNotFull: false };
+                            })];
+                    case 1:
+                        response = _a.sent();
+                        if (!response.isNotFull) return [3 /*break*/, 3];
+                        return [4 /*yield*/, UserModel.findOne({ '_id': editorId }).then(function (editor) { return __awaiter(_this, void 0, void 0, function () {
+                                var userid, respM;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4 /*yield*/, this.admGetUserIdByEmail([userEmail])];
+                                        case 1:
+                                            userid = _a.sent();
+                                            return [4 /*yield*/, CallModel.updateOne({ _id: callId }, { $addToSet: { clients: userid } })];
+                                        case 2:
+                                            respM = _a.sent();
+                                            resp = { code: 200, data: respM };
+                                            return [2 /*return*/];
+                                    }
+                                });
+                            }); })["catch"](function (err) {
+                                resp = { code: 405, data: err.toString() };
+                            })];
+                    case 2:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        resp = { code: 423, data: "The call is full" };
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, resp];
                 }
             });
         });

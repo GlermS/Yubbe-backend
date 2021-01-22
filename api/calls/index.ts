@@ -12,7 +12,7 @@ const listCalls = async (req: express.Request,res: express.Response)=>{
 export default listCalls;
 
 export async function createCall(req: express.Request,res: express.Response){
-   
+    console.log(req.body)
     const handler = new CallsHandler();
     const respo = await handler.createCall(req);
 

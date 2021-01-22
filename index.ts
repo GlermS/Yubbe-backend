@@ -9,7 +9,7 @@ import signup from './api/accounts/signup';
 import login from './api/accounts/login';
 import session from './api/accounts/session';
 import calls, {createCall, joinCall, moderateCall, listUsersCall} from './api/calls';
-import callInfo, {editCall} from './api/calls/adm';
+import callInfo, {editCall, deleteCall,addUserToCall} from './api/calls/adm';
 import getUsers, {updateUser, changeUserPassword, deleteUser, checkEmail} from './api/accounts/adm'
 
 
@@ -30,7 +30,6 @@ app.get('/api/session', session);
 
 app.get('/api/calls', calls)
 app.get('/api/calls/mycalls', listUsersCall)
-app.post('/api/calls', createCall)
 
 app.post('/api/call/join', joinCall)
 app.post('/api/call/moderate', moderateCall)
@@ -41,8 +40,11 @@ app.put('/api/adm/user', updateUser)
 app.put('/api/adm/user/password', changeUserPassword)
 app.delete('/api/adm/user',deleteUser)
 
+app.post('/api/adm/calls', createCall)
+app.post('/api/adm/call/client', addUserToCall)
 app.get('/api/adm/call',callInfo)
 app.put('/api/adm/call',editCall)
+app.delete('/api/adm/call',deleteCall)
 
 
 

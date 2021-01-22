@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.editCall = void 0;
+exports.addUserToCall = exports.deleteCall = exports.editCall = void 0;
 var calls_1 = require("../../../domain/handlers/calls");
 var callInfo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var handler, respo;
@@ -70,3 +70,37 @@ function editCall(req, res) {
     });
 }
 exports.editCall = editCall;
+function deleteCall(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var handler, respo;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    handler = new calls_1.AdmCallsHandler();
+                    return [4 /*yield*/, handler.deleteCall(req)];
+                case 1:
+                    respo = _a.sent();
+                    res.status(respo.code).json(respo.data);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.deleteCall = deleteCall;
+function addUserToCall(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var handler, respo;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    handler = new calls_1.AdmCallsHandler();
+                    return [4 /*yield*/, handler.addUserToCall(req)];
+                case 1:
+                    respo = _a.sent();
+                    res.status(respo.code).json(respo.data);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.addUserToCall = addUserToCall;

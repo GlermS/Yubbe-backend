@@ -36,3 +36,11 @@ export async function addUserToCall(req: express.Request,res: express.Response){
 }
 
 
+export async function removeUserFromCall(req: express.Request,res: express.Response){
+   
+    const handler = new AdmCallsHandler();
+    const respo = await handler.removeUserFromCall(req);
+
+    res.status(respo.code).json(respo.data);
+}
+

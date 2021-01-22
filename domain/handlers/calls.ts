@@ -136,6 +136,19 @@ export class AdmCallsHandler {
             return {code: 401, data: "Not allowed"}
         }
     }
+
+    async removeUserFromCall(req:express.Request){
+        const auth = this.authenticateData(req)
+        //console.log(auth)
+        //console.log(req.body)
+        if(auth.approved){
+            const db = new MongoDB()
+            const call =  await db.admCallRemoveClient(auth.id,req.query.email, req.query.id)
+            return call
+        }else{
+            return {code: 401, data: "Not allowed"}
+        }
+    }
     
 
     authenticateData(req: express.Request){

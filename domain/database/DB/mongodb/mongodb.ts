@@ -363,6 +363,27 @@ class MongoDB implements DataBaseInterface{
         return resp
     }
 
+    async admCallRemoveClient(editorId:string ,userEmail: any, callId: any){
+        dbConnect()
+        
+        var resp:any
+       
+        await UserModel.findOne({'_id':editorId}).then(async (editor)=>{
+            if(editor.authorization==='adm'){
+                const userid =await this.admGetUserIdByEmail([userEmail])
+                const respM = await CallModel.updateOne({_id:callId},{$pull:{clients:userid}})
+                resp = {code:200, data:respM}
+            }else{
+                resp = {code:401, data:"Not allowed"}
+            }
+            
+        }).catch((err) =>{
+            resp = {code:405, data:err.toString()}
+        })  
+
+        return resp
+    }
+
     admDeleteCall = async (editorId:string, callId:any) =>{
         dbConnect();
         var resp:any;

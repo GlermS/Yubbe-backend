@@ -2,11 +2,12 @@ import express = require('express');
 import TokenAuthenticator from "../validation/token-authentication";
 import MongoDB from "../database/DB/mongodb/mongodb";
 
-
 export class AdmUsersHandler{
+    code = {authorized:200}
+
     listUsers = async (req:express.Request)=>{
             const auth = this.authenticateData(req)
-            if(auth.code===202){
+            if(auth.code===this.code.authorized){
                 const db = new MongoDB()
                 const respo =  await db.listUsers(auth.data.id)
                 return respo
@@ -18,7 +19,7 @@ export class AdmUsersHandler{
     updateUser = async (req:express.Request)=>{
         const auth = this.authenticateData(req)
         const userData = req.body.userData
-        if(auth.code===202){
+        if(auth.code===this.code.authorized){
             const db = new MongoDB()
             var user ={"id":userData.id}
             if(userData.name){
@@ -46,7 +47,7 @@ export class AdmUsersHandler{
         const auth = this.authenticateData(req)
         const userData = req.body.userData
         
-        if(auth.code===202){
+        if(auth.code===this.code.authorized){
             const db = new MongoDB()
             const respo =  await db.admUpdateUserPassword(auth.data.id, userData.id, userData.password)
             return respo
@@ -58,7 +59,7 @@ export class AdmUsersHandler{
     deleteUser = async (req:express.Request)=>{
         const auth = this.authenticateData(req)
 
-        if(auth.code===202){
+        if(auth.code===this.code.authorized){
             const db = new MongoDB()
             const respo =  await db.admDeleteUser(auth.data.id,req.body.userId)
             return respo
@@ -70,7 +71,7 @@ export class AdmUsersHandler{
     checkEmail = async (req:express.Request)=>{
         const auth = this.authenticateData(req)
         
-        if(auth.code===202){
+        if(auth.code===this.code.authorized){
             const db = new MongoDB()
             const respo =  await db.admCheckEmail(auth.data.id,req.query.email)
             return respo

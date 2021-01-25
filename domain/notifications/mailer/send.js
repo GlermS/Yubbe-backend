@@ -36,44 +36,41 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var jwt = require("jsonwebtoken");
-var mongodb_1 = require("../database/DB/mongodb/mongodb");
-var LoginAuthentication = /** @class */ (function () {
-    function LoginAuthentication() {
+var nodemailer = require("nodemailer");
+var Mailer = /** @class */ (function () {
+    function Mailer() {
         var _this = this;
-        this.verifyData = function (db, email, password) { return __awaiter(_this, void 0, void 0, function () {
-            var data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, db.compareLoginData(email, password)];
-                    case 1:
-                        data = _a.sent();
-                        return [2 /*return*/, data];
-                }
-            });
-        }); };
-    }
-    LoginAuthentication.prototype.authenticate = function (email, password) {
-        return __awaiter(this, void 0, void 0, function () {
-            var database, data;
+        this.ConfirmSignup = function (email) { return __awaiter(_this, void 0, void 0, function () {
+            var transporter, info;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        database = new mongodb_1["default"]();
-                        return [4 /*yield*/, this.verifyData(database, email, password)];
+                        transporter = nodemailer.createTransport(this.transportOptions);
+                        return [4 /*yield*/, transporter.sendMail({
+                                from: '"Yubbe Club" <guilhermesansou@hotmail.com>',
+                                to: email,
+                                subject: "Confirmação de Registro",
+                                text: "Parabéns, o seu registro foi confirmado. Acesse a nossa plataforma no link:\nhttps:yubbe.club",
+                                html: "<h1>Parabéns!</h1><p>O seu registro foi confirmado. Acesse a nossa plataforma no link:</p><a href=https:yubbe.club>Acesso à Plataforma</a>"
+                            })];
                     case 1:
-                        data = _a.sent();
-                        if (data.code === 202) {
-                            return [2 /*return*/, { code: data.code, authToken: jwt.sign({ name: data.data.name, id: data.data.id, authorization: data.data.authorization }, process.env.AUTHENTICATION_KEY, { expiresIn: '24h' }) }];
-                        }
-                        else {
-                            return [2 /*return*/, { code: data.code, authToken: '' }];
-                        }
+                        info = _a.sent();
+                        console.log("Message sent: %s", info.messageId);
                         return [2 /*return*/];
                 }
             });
-        });
-    };
-    return LoginAuthentication;
+        }); };
+        // create reusable transporter object using the default SMTP transport
+        this.transportOptions = {
+            host: "smtp.office365.com",
+            port: 587,
+            secure: false,
+            auth: {
+                user: 'guilhermesansou@hotmail.com',
+                pass: '#Santos075'
+            }
+        };
+    }
+    return Mailer;
 }());
-exports["default"] = LoginAuthentication;
+exports["default"] = Mailer;

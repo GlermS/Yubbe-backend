@@ -49,12 +49,7 @@ exports["default"] = (function (req, res) { return __awaiter(void 0, void 0, voi
             case 1:
                 respo = _a.sent();
                 //console.log(req.headers.authtoken)
-                if (respo.approved) {
-                    res.status(200).json(respo);
-                }
-                else {
-                    res.status(401).json(respo);
-                }
+                res.status(respo.code).json(respo.data);
                 return [2 /*return*/];
         }
     });

@@ -48,9 +48,9 @@ var AdmUsersHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.listUsers(auth.id)];
+                        return [4 /*yield*/, db.listUsers(auth.data.id)];
                     case 1:
                         respo = _a.sent();
                         return [2 /*return*/, respo];
@@ -65,7 +65,7 @@ var AdmUsersHandler = /** @class */ (function () {
                     case 0:
                         auth = this.authenticateData(req);
                         userData = req.body.userData;
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
                         user = { "id": userData.id };
                         if (userData.name) {
@@ -82,7 +82,7 @@ var AdmUsersHandler = /** @class */ (function () {
                                 user['authorization'] = userData.authorization;
                             }
                         }
-                        return [4 /*yield*/, db.admUpdateUser(auth.id, user)];
+                        return [4 /*yield*/, db.admUpdateUser(auth.data.id, user)];
                     case 1:
                         respo = _a.sent();
                         return [2 /*return*/, respo];
@@ -97,9 +97,9 @@ var AdmUsersHandler = /** @class */ (function () {
                     case 0:
                         auth = this.authenticateData(req);
                         userData = req.body.userData;
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.admUpdateUserPassword(auth.id, userData.id, userData.password)];
+                        return [4 /*yield*/, db.admUpdateUserPassword(auth.data.id, userData.id, userData.password)];
                     case 1:
                         respo = _a.sent();
                         return [2 /*return*/, respo];
@@ -113,10 +113,9 @@ var AdmUsersHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        console.log(auth);
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.admDeleteUser(auth.id, req.body.userId)];
+                        return [4 /*yield*/, db.admDeleteUser(auth.data.id, req.body.userId)];
                     case 1:
                         respo = _a.sent();
                         return [2 /*return*/, respo];
@@ -130,9 +129,9 @@ var AdmUsersHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.admCheckEmail(auth.id, req.query.email)];
+                        return [4 /*yield*/, db.admCheckEmail(auth.data.id, req.query.email)];
                     case 1:
                         respo = _a.sent();
                         return [2 /*return*/, respo];

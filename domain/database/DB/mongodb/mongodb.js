@@ -43,11 +43,11 @@ var mongoose = require("mongoose");
 var bcrypt_1 = require("bcrypt");
 var weeknumber_1 = require("weeknumber");
 var User = /** @class */ (function () {
-    function User(approved, name, id, authorization) {
-        this.approved = approved;
+    function User(name, id, authorization, email) {
         this.name = name;
         this.id = id;
         this.authorization = authorization;
+        this.email = email;
     }
     return User;
 }());
@@ -167,9 +167,7 @@ var MongoDB = /** @class */ (function () {
                     case 3:
                         _a.sent();
                         _a.label = 4;
-                    case 4:
-                        console.log(resp);
-                        return [2 /*return*/, resp];
+                    case 4: return [2 /*return*/, resp];
                 }
             });
         }); };
@@ -210,7 +208,6 @@ var MongoDB = /** @class */ (function () {
                                             if (callData.date) {
                                                 data['date'] = callData.date;
                                             }
-                                            console.log(data);
                                             _e = { code: 200 };
                                             return [4 /*yield*/, CallModel.updateOne({ "_id": callId }, data)];
                                         case 5:
@@ -434,10 +431,10 @@ var MongoDB = /** @class */ (function () {
                         _a.trys.push([3, 5, , 6]);
                         return [4 /*yield*/, bcrypt_1.compare(password, resp[0].password).then(function (isPasswordOk) {
                                 if (isPasswordOk) {
-                                    return new User(true, resp[0].name, resp[0].id, resp[0].authorization);
+                                    return { code: 202, data: new User(resp[0].name, resp[0].id, resp[0].authorization, '') };
                                 }
                                 else {
-                                    return new User(false, '', '', '');
+                                    return { code: 401, data: new User('', '', '', '') };
                                 }
                             })];
                     case 4:
@@ -445,7 +442,7 @@ var MongoDB = /** @class */ (function () {
                         return [2 /*return*/, user];
                     case 5:
                         error_1 = _a.sent();
-                        return [2 /*return*/, new User(false, '', '', '')];
+                        return [2 /*return*/, { code: 400, data: new User('', '', '', '') }];
                     case 6: return [2 /*return*/];
                 }
             });
@@ -465,11 +462,11 @@ var MongoDB = /** @class */ (function () {
                                     switch (_a.label) {
                                         case 0: return [4 /*yield*/, UserModel.create({ name: name, email: email, password: hash }).then(function (data) {
                                                 if (data != undefined) {
-                                                    return { code: 201, data: new User(true, data.name, data.id, data.authorization) };
+                                                    return { code: 201, data: new User(data.name, data.id, data.authorization, data.email) };
                                                 }
-                                                return { code: 401, data: new User(false, '', '', '') };
+                                                return { code: 401, data: new User('', '', '', '') };
                                             })["catch"](function (err) {
-                                                return { code: 409, data: new User(false, '', '', '') };
+                                                return { code: 409, data: new User('', '', '', '') };
                                             })];
                                         case 1:
                                             resp = _a.sent();
@@ -512,7 +509,7 @@ var MongoDB = /** @class */ (function () {
             });
         });
     };
-    MongoDB.prototype.listUsersCalls = function (userId) {
+    MongoDB.prototype.listUserCalls = function (userId) {
         return __awaiter(this, void 0, void 0, function () {
             var resp, respM;
             return __generator(this, function (_a) {

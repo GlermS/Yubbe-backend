@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var mongodb_1 = require("../database/DB/mongodb/mongodb");
 var jwt = require("jsonwebtoken");
+var send_1 = require("../notifications/mailer/send");
 var SignupHandler = /** @class */ (function () {
     function SignupHandler() {
     }
@@ -52,20 +53,19 @@ var SignupHandler = /** @class */ (function () {
                         if (!isOk) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
                         return [4 /*yield*/, db.createNewAccount(name, email, password).then(function (response) {
-                                if (response.data.approved) { //process.env.AUTHENTICATION_KEY
-                                    return { approved: true, code: response.code, name: response.data.name, authToken: jwt.sign({ name: response.data.name, id: response.data.id, authorization: response.data.authorization }, process.env.AUTHENTICATION_KEY || '0000', { expiresIn: '1h' }) };
+                                if (response.data.approved) {
+                                    var notification = new send_1["default"]();
+                                    notification.ConfirmSignup(response.data.email);
+                                    return { approved: true, code: response.code, name: response.data.name, authToken: jwt.sign({ name: response.data.name, id: response.data.id, authorization: response.data.authorization }, process.env.AUTHENTICATION_KEY, { expiresIn: '1h' }) };
                                 }
                                 else {
                                     return { approved: false, code: response.code, name: '', authToken: '', message: 'Email já utilizado' };
                                 }
                             })["catch"](function (err) {
                                 return { approved: false, code: 401, name: '', authToken: '', message: err.toString() };
-                            })
-                            //console.log(resp)
-                        ];
+                            })];
                     case 1:
                         resp = _b.sent();
-                        //console.log(resp)
                         return [2 /*return*/, resp];
                     case 2: return [2 /*return*/];
                 }

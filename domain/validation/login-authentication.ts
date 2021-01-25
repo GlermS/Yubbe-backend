@@ -9,15 +9,16 @@ class LoginAuthentication{
         const data = await db.compareLoginData(email, password)
         return data;
     }
+
     async authenticate(email:string, password:string){
         let database = new MongoDB();
 
         const data = await this.verifyData(database, email, password);
 
-        if (data.approved){
-            return {approved:true, name:data.name, authToken: jwt.sign({name:data.name, id: data.id, authorization: data.authorization}, process.env.AUTHENTICATION_KEY, {expiresIn:'24h'})}
+        if (data.code===202){
+            return {code:data.code, authToken: jwt.sign({name:data.data.name, id: data.data.id, authorization: data.data.authorization}, process.env.AUTHENTICATION_KEY, {expiresIn:'24h'})}
         }else{
-            return {approved:false, name:'', authToken: ''}
+            return {code:data.code, authToken: ''}
         }
     }
 

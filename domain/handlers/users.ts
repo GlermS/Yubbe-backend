@@ -6,9 +6,9 @@ import MongoDB from "../database/DB/mongodb/mongodb";
 export class AdmUsersHandler{
     listUsers = async (req:express.Request)=>{
             const auth = this.authenticateData(req)
-            if(auth.approved){
+            if(auth.code===202){
                 const db = new MongoDB()
-                const respo =  await db.listUsers(auth.id)
+                const respo =  await db.listUsers(auth.data.id)
                 return respo
             }else{
                 return {code: 401, data: "Not allowed"}
@@ -18,7 +18,7 @@ export class AdmUsersHandler{
     updateUser = async (req:express.Request)=>{
         const auth = this.authenticateData(req)
         const userData = req.body.userData
-        if(auth.approved){
+        if(auth.code===202){
             const db = new MongoDB()
             var user ={"id":userData.id}
             if(userData.name){
@@ -35,7 +35,7 @@ export class AdmUsersHandler{
                     user['authorization']=userData.authorization
                 }
             }
-            const respo =  await db.admUpdateUser(auth.id, user)
+            const respo =  await db.admUpdateUser(auth.data.id, user)
             return respo
         }else{
             return {code: 401, data: "Not allowed"}
@@ -45,9 +45,10 @@ export class AdmUsersHandler{
     changeUserPassword = async (req:express.Request)=>{
         const auth = this.authenticateData(req)
         const userData = req.body.userData
-        if(auth.approved){
+        
+        if(auth.code===202){
             const db = new MongoDB()
-            const respo =  await db.admUpdateUserPassword(auth.id, userData.id, userData.password)
+            const respo =  await db.admUpdateUserPassword(auth.data.id, userData.id, userData.password)
             return respo
         }else{
             return {code: 401, data: "Not allowed"}
@@ -56,10 +57,10 @@ export class AdmUsersHandler{
 
     deleteUser = async (req:express.Request)=>{
         const auth = this.authenticateData(req)
-        console.log(auth)
-        if(auth.approved){
+
+        if(auth.code===202){
             const db = new MongoDB()
-            const respo =  await db.admDeleteUser(auth.id,req.body.userId)
+            const respo =  await db.admDeleteUser(auth.data.id,req.body.userId)
             return respo
         }else{
             return {code: 401, data: "Not allowed"}
@@ -69,9 +70,9 @@ export class AdmUsersHandler{
     checkEmail = async (req:express.Request)=>{
         const auth = this.authenticateData(req)
         
-        if(auth.approved){
+        if(auth.code===202){
             const db = new MongoDB()
-            const respo =  await db.admCheckEmail(auth.id,req.query.email)
+            const respo =  await db.admCheckEmail(auth.data.id,req.query.email)
             return respo
         }else{
             return {code: 401, data: "Not allowed"}

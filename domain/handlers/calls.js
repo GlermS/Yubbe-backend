@@ -49,7 +49,7 @@ var CallsHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
                         return [4 /*yield*/, db.listCalls()];
                     case 1:
@@ -67,9 +67,8 @@ var CallsHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        if (!(auth.approved && auth.authorization === "adm")) return [3 /*break*/, 2];
+                        if (!(auth.code === 202 && auth.data.authorization === "adm")) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        console.log(req.body);
                         return [4 /*yield*/, db.createCall(req.body)];
                     case 1:
                         call = _a.sent();
@@ -86,13 +85,13 @@ var CallsHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.joinCall(auth.id, req.body.callId)["catch"](console.log)];
+                        return [4 /*yield*/, db.joinCall(auth.data.id, req.body.callId)["catch"](function () { return { code: 500, data: 'Error interno' }; })];
                     case 1:
                         call = _a.sent();
                         return [2 /*return*/, call];
-                    case 2: return [2 /*return*/, { code: 401, message: "Not allowed" }];
+                    case 2: return [2 /*return*/, { code: 401, data: "Not allowed" }];
                 }
             });
         });
@@ -104,13 +103,13 @@ var CallsHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        if (!(auth.approved && (auth.authorization === 'adm' || auth.authorization === 'moderator'))) return [3 /*break*/, 2];
+                        if (!(auth.code === 202 && (auth.data.authorization === 'adm' || auth.data.authorization === 'moderator'))) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.moderateCall(auth.id, auth.authorization, req.body.callId)["catch"](console.log)];
+                        return [4 /*yield*/, db.moderateCall(auth.data.id, auth.data.authorization, req.body.callId)["catch"](function () { return { code: 500, data: 'Error interno' }; })];
                     case 1:
                         call = _a.sent();
                         return [2 /*return*/, call];
-                    case 2: return [2 /*return*/, { code: 401, message: "Not allowed" }];
+                    case 2: return [2 /*return*/, { code: 401, data: "Not allowed" }];
                 }
             });
         });
@@ -122,9 +121,9 @@ var CallsHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.listUsersCalls(auth.id)]; //.catch(console.log)
+                        return [4 /*yield*/, db.listUserCalls(auth.data.id)]; //.catch(console.log)
                     case 1:
                         call = _a.sent() //.catch(console.log)
                         ;
@@ -151,9 +150,9 @@ var AdmCallsHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.admCallInfo(auth.id, req.query.id)]; //.catch(console.log)
+                        return [4 /*yield*/, db.admCallInfo(auth.data.id, req.query.id)]; //.catch(console.log)
                     case 1:
                         call = _a.sent() //.catch(console.log)
                         ;
@@ -170,9 +169,9 @@ var AdmCallsHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.admUpdateCall(auth.id, req.query.id, req.body)];
+                        return [4 /*yield*/, db.admUpdateCall(auth.data.id, req.query.id, req.body)];
                     case 1:
                         call = _a.sent();
                         return [2 /*return*/, call];
@@ -188,9 +187,9 @@ var AdmCallsHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.admDeleteCall(auth.id, req.query.id)];
+                        return [4 /*yield*/, db.admDeleteCall(auth.data.id, req.query.id)];
                     case 1:
                         call = _a.sent();
                         return [2 /*return*/, call];
@@ -206,9 +205,9 @@ var AdmCallsHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.admCallAddClient(auth.id, req.body.email, req.query.id)];
+                        return [4 /*yield*/, db.admCallAddClient(auth.data.id, req.body.email, req.query.id)];
                     case 1:
                         call = _a.sent();
                         return [2 /*return*/, call];
@@ -224,9 +223,9 @@ var AdmCallsHandler = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         auth = this.authenticateData(req);
-                        if (!auth.approved) return [3 /*break*/, 2];
+                        if (!(auth.code === 202)) return [3 /*break*/, 2];
                         db = new mongodb_1["default"]();
-                        return [4 /*yield*/, db.admCallRemoveClient(auth.id, req.query.email, req.query.id)];
+                        return [4 /*yield*/, db.admCallRemoveClient(auth.data.id, req.query.email, req.query.id)];
                     case 1:
                         call = _a.sent();
                         return [2 /*return*/, call];

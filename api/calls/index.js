@@ -59,7 +59,6 @@ function createCall(req, res) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log(req.body);
                     handler = new calls_1["default"]();
                     return [4 /*yield*/, handler.createCall(req)];
                 case 1:
@@ -78,10 +77,9 @@ function joinCall(req, res) {
             switch (_a.label) {
                 case 0:
                     handler = new calls_1["default"]();
-                    return [4 /*yield*/, handler.joinCall(req)["catch"](console.log)];
+                    return [4 /*yield*/, handler.joinCall(req)];
                 case 1:
                     respo = _a.sent();
-                    console.log(respo);
                     res.status(respo.code).json(respo.data);
                     return [2 /*return*/];
             }
@@ -96,7 +94,7 @@ function moderateCall(req, res) {
             switch (_a.label) {
                 case 0:
                     handler = new calls_1["default"]();
-                    return [4 /*yield*/, handler.moderateCall(req)["catch"](console.log)];
+                    return [4 /*yield*/, handler.moderateCall(req)];
                 case 1:
                     respo = _a.sent();
                     res.status(respo.code).json(respo.data);

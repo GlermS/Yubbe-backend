@@ -5,8 +5,7 @@ import LoginHandler from '../../domain/handlers/login';
 export default async (req: express.Request,res: express.Response)=>{
    
     const handler = new LoginHandler();
-    
-    //console.log(req.body)
+
     const response = await handler.authenticateData(req)
 
     res.status(response.code).cookie('authToken',response.authToken,{

@@ -9,7 +9,6 @@ export default async (req: express.Request,res: express.Response)=>{
     const respo = await handler.createAccount(req)
     
     const response ={
-        approved:respo.approved,
         name: respo.name
     }
 

@@ -12,6 +12,7 @@ const listCalls = async (req: express.Request,res: express.Response)=>{
 export default listCalls;
 
 export async function createCall(req: express.Request,res: express.Response){
+    
     const handler = new CallsHandler();
     const respo = await handler.createCall(req);
 
@@ -20,6 +21,7 @@ export async function createCall(req: express.Request,res: express.Response){
 
 
 export async function joinCall(req: express.Request,res: express.Response){
+
     const handler = new CallsHandler();
     const respo = await handler.joinCall(req)
 
@@ -36,7 +38,6 @@ export async function moderateCall(req: express.Request,res: express.Response){
 export async function listUsersCall(req: express.Request,res: express.Response){
    
     const handler = new CallsHandler();
-    const respo = await handler.listUsersCalls(req)//.catch(console.log);
-
+    const respo = await handler.listUsersCalls(req);
     res.status(respo.code).json(respo.data);
 }

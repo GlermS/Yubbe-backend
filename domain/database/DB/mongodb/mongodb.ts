@@ -20,7 +20,10 @@ class User implements UserInterface{
         this.email=email
     }
 }
-
+const defaultAnswer = {
+    internalError: {code: 500, data:'Internal Error'},
+    unauthorized: {code:401, data:"Only adm"}
+}
 class MongoDB implements DataBaseInterface{
     async listUsers(userId:string){
         dbConnect();
@@ -29,10 +32,10 @@ class MongoDB implements DataBaseInterface{
             if(user.authorization==='adm'){
                 resp = {code:200, data: await UserModel.aggregate([{$project:{"_id":1,"weeklyLimit":1, "name":1, "email":1,"authorization":1}}])}
             }else{
-                resp = {code:401, data:"Only adm"}
+                resp = defaultAnswer.unauthorized
             }
         }).catch((err) =>{
-            resp = {code: 400, data:err.toString()}
+            resp = defaultAnswer.internalError
             })
         return resp
     }
@@ -44,10 +47,10 @@ class MongoDB implements DataBaseInterface{
             if(editor.authorization==='adm'){
                 resp= {code:200, data: await UserModel.updateOne({'_id':userData.id},userData)}
             }else{
-                resp = {code:401, data:"Only adm"}
+                resp = defaultAnswer.unauthorized
             }
         }).catch((err) =>{
-            resp = {code: 400, data:err.toString()}
+            resp = defaultAnswer.internalError
             })
         return resp
     }
@@ -60,13 +63,13 @@ class MongoDB implements DataBaseInterface{
                 await hash(password,12).then(async(hash)=>{
                     resp= {code:200, data: await UserModel.updateOne({'_id':userId},{password:hash})}
                 }).catch((err)=>{
-                        resp = {code: 409 ,data: 'Deu ruim'}
+                        resp = defaultAnswer.internalError
                          })
             }else{
-                resp = {code:401, data:"Only adm"}
+                resp = defaultAnswer.unauthorized
             }
             }).catch((err) =>{
-                resp = {code: 400, data:err.toString()}
+                resp = defaultAnswer.internalError
                 })
         return resp
     }
@@ -78,10 +81,10 @@ class MongoDB implements DataBaseInterface{
                 resp= {code:200, data: await UserModel.deleteOne({'_id':userId})}
                 
             }else{
-                resp = {code:401, data:"Only adm"}
+                resp = defaultAnswer.unauthorized
             }
             }).catch((err) =>{
-                resp = {code: 400, data:err.toString()}
+                resp = defaultAnswer.internalError
                 })
         return resp
     }
@@ -92,14 +95,14 @@ class MongoDB implements DataBaseInterface{
         try{
             const user = await compare(password, resp[0].password).then(isPasswordOk=>{
                 if(isPasswordOk){
-                    return {code:202, data: new User(resp[0].name, resp[0].id, resp[0].authorization,'')};
+                    return {code:200, data: new User(resp[0].name, resp[0].id, resp[0].authorization,'')};
                 }else{
                     return {code:401, data: new User('', '', '','')};
                 }
             });
             return user;
         }catch(error){
-            return {code:400, data:new User('', '', '','')}
+            return {code:500, data:new User('', '', '','')}
         }
     }
 
@@ -134,9 +137,8 @@ class MongoDB implements DataBaseInterface{
             "clients":1,
             "moderator._id": 1,
             "moderator.name":1
-          }},{$match: {date: {$gt:new Date()}}}]).sort({date:1}).then((data) =>{return data})
-
-        return {code:200, data: respM}
+          }},{$match: {date: {$gt:new Date()}}}]).sort({date:1}).then((data) =>{return {code:200, data}}).catch(()=>{return defaultAnswer.internalError})
+        return respM
     }
 
     async listUserCalls(userId: string){
@@ -146,6 +148,7 @@ class MongoDB implements DataBaseInterface{
             "moderatorId": mongoose.Types.ObjectId(userId),
             date: {$gt:new Date()}
            }).then(data=>{return data})
+
         return {code:200, data: {client: resp, moderator:respM}}
     }
 
@@ -157,7 +160,7 @@ class MongoDB implements DataBaseInterface{
         if(callData.date){
             data['date'] =callData.date}
 
-        const resp = await CallModel.create(data).then((data)=>{return {code:201, data}}).catch((err)=>{return {code: 404, data: err.toString()}})
+        const resp = await CallModel.create(data).then((data)=>{return {code:201, data}}).catch((err)=>{return defaultAnswer.internalError})
         return resp
     }
 
@@ -196,7 +199,7 @@ class MongoDB implements DataBaseInterface{
            
             
         }else{
-            resp = {code: 423, data: "The call is full"}
+            resp = {code: 409, data: "The call is full"}
         }
         return resp
     }
@@ -213,10 +216,10 @@ class MongoDB implements DataBaseInterface{
                         resp = {code: 401 ,data: "The call already has a moderator"};   
                     }
                 }else{
-                resp = {code: 423, data: "Data don't match"}
+                resp = defaultAnswer.unauthorized
             }
         }).catch((err) =>{
-            console.log(err)
+            resp = defaultAnswer.internalError
         })
         return resp
     }
@@ -252,10 +255,10 @@ class MongoDB implements DataBaseInterface{
                    {$match:{"_id":mongoose.Types.ObjectId(callId)}}])}
                 
             }else{
-                resp = {code:401, data:"Only adm"}
+                resp = defaultAnswer.unauthorized
             }
             }).catch((err) =>{
-                resp = {code: 400, data:err.toString()}
+                resp = defaultAnswer.internalError
                 })
         return resp
     }
@@ -315,10 +318,10 @@ class MongoDB implements DataBaseInterface{
                 resp= {code:200, data:await CallModel.updateOne({"_id":callId},data)}
                 
             }else{
-                resp = {code:401, data:"Only adm"}
+                resp = defaultAnswer.unauthorized
             }
             }).catch((err) =>{
-                resp = {code: 400, data:err.toString()}
+                resp = defaultAnswer.internalError
                 })
         return resp
     }
@@ -378,10 +381,10 @@ class MongoDB implements DataBaseInterface{
                 resp= {code:200, data:await CallModel.deleteOne({"_id":callId})}
                 
             }else{
-                resp = {code:401, data:"Only adm"}
+                resp = defaultAnswer.unauthorized
             }
             }).catch((err) =>{
-                resp = {code: 400, data:err.toString()}
+                resp = defaultAnswer.internalError
                 })
         return resp
     }

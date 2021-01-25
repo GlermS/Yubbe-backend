@@ -4,9 +4,13 @@ import { Response } from '../database/interface/database';
 import TokenAuthenticator from "../validation/token-authentication";
 
 class CallsHandler{
+    code ={
+        approved:200,
+    }
+
     async listCalls(req:express.Request){
         const auth = this.authenticateData(req)
-        if(auth.code===202){
+        if(auth.code===this.code.approved){
             const db = new MongoDB()
             const respo =  await db.listCalls()
             return respo
@@ -18,7 +22,7 @@ class CallsHandler{
     async createCall(req:express.Request){
         const auth = this.authenticateData(req)
 
-        if(auth.code===202 && auth.data.authorization === "adm"){
+        if(auth.code===this.code.approved && auth.data.authorization === "adm"){
             const db = new MongoDB()
 
             const call =  await db.createCall(req.body)
@@ -31,7 +35,7 @@ class CallsHandler{
     async joinCall(req:express.Request):Promise<Response>{
         const auth = this.authenticateData(req)
 
-        if(auth.code===202){
+        if(auth.code===this.code.approved){
             const db = new MongoDB()
             const call =  await db.joinCall(auth.data.id, req.body.callId).catch(()=>{return {code:500, data:'Error interno'}})
             return call
@@ -43,7 +47,7 @@ class CallsHandler{
     async moderateCall(req:express.Request){
         const auth = this.authenticateData(req)
 
-        if(auth.code===202 && (auth.data.authorization==='adm' || auth.data.authorization === 'moderator')){
+        if(auth.code===this.code.approved && (auth.data.authorization==='adm' || auth.data.authorization === 'moderator')){
             const db = new MongoDB()
             const call =  await db.moderateCall(auth.data.id, auth.data.authorization, req.body.callId).catch(()=>{return {code:500, data:'Error interno'}})
             return call
@@ -56,7 +60,7 @@ class CallsHandler{
     async listUsersCalls(req:express.Request){
         const auth = this.authenticateData(req)
 
-        if(auth.code===202){
+        if(auth.code===this.code.approved){
             const db = new MongoDB()
             const call =  await db.listUserCalls(auth.data.id)//.catch(console.log)
             return call
@@ -76,10 +80,14 @@ class CallsHandler{
 export default CallsHandler;
 
 export class AdmCallsHandler {
+    code ={
+        approved:200,
+    }
+    
     async callInfo(req:express.Request){
         const auth = this.authenticateData(req)
 
-        if(auth.code===202){
+        if(auth.code===this.code.approved){
             const db = new MongoDB()
             const call =  await db.admCallInfo(auth.data.id, req.query.id)//.catch(console.log)
             return call
@@ -92,7 +100,7 @@ export class AdmCallsHandler {
     async editCall(req:express.Request){
         const auth = this.authenticateData(req)
         
-        if(auth.code===202){
+        if(auth.code===this.code.approved){
             const db = new MongoDB()
             const call =  await db.admUpdateCall(auth.data.id,req.query.id, req.body)
             return call
@@ -104,7 +112,7 @@ export class AdmCallsHandler {
     async deleteCall(req:express.Request){
         const auth = this.authenticateData(req)
 
-        if(auth.code===202){
+        if(auth.code===this.code.approved){
             const db = new MongoDB()
             const call =  await db.admDeleteCall(auth.data.id, req.query.id)
             return call
@@ -116,7 +124,7 @@ export class AdmCallsHandler {
 
     async addUserToCall(req:express.Request){
         const auth = this.authenticateData(req)
-        if(auth.code===202){
+        if(auth.code===this.code.approved){
             const db = new MongoDB()
             const call =  await db.admCallAddClient(auth.data.id,req.body.email, req.query.id)
             return call
@@ -128,7 +136,7 @@ export class AdmCallsHandler {
     async removeUserFromCall(req:express.Request){
         const auth = this.authenticateData(req)
         
-        if(auth.code===202){
+        if(auth.code===this.code.approved){
             const db = new MongoDB()
             const call =  await db.admCallRemoveClient(auth.data.id,req.query.email, req.query.id)
             return call

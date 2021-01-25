@@ -111,10 +111,9 @@ function listUsersCall(req, res) {
             switch (_a.label) {
                 case 0:
                     handler = new calls_1["default"]();
-                    return [4 /*yield*/, handler.listUsersCalls(req)]; //.catch(console.log);
+                    return [4 /*yield*/, handler.listUsersCalls(req)];
                 case 1:
-                    respo = _a.sent() //.catch(console.log);
-                    ;
+                    respo = _a.sent();
                     res.status(respo.code).json(respo.data);
                     return [2 /*return*/];
             }

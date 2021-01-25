@@ -43,12 +43,9 @@ exports["default"] = (function (req, res) { return __awaiter(void 0, void 0, voi
         switch (_a.label) {
             case 0:
                 authenticator = new token_authentication_1["default"]();
-                return [4 /*yield*/, authenticator.verifyToken(req)
-                    //console.log(req.headers.authtoken)
-                ];
+                return [4 /*yield*/, authenticator.verifyToken(req)];
             case 1:
                 respo = _a.sent();
-                //console.log(req.headers.authtoken)
                 res.status(respo.code).json(respo.data);
                 return [2 /*return*/];
         }

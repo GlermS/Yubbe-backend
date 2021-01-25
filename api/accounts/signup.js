@@ -48,7 +48,6 @@ exports["default"] = (function (req, res) { return __awaiter(void 0, void 0, voi
             case 1:
                 respo = _a.sent();
                 response = {
-                    approved: respo.approved,
                     name: respo.name
                 };
                 res.status(respo.code);

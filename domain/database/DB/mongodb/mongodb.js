@@ -51,6 +51,10 @@ var User = /** @class */ (function () {
     }
     return User;
 }());
+var defaultAnswer = {
+    internalError: { code: 500, data: 'Internal Error' },
+    unauthorized: { code: 401, data: "Only adm" }
+};
 var MongoDB = /** @class */ (function () {
     function MongoDB() {
         var _this = this;
@@ -95,13 +99,13 @@ var MongoDB = /** @class */ (function () {
                                             resp = (_a.data = _b.sent(), _a);
                                             return [3 /*break*/, 3];
                                         case 2:
-                                            resp = { code: 401, data: "Only adm" };
+                                            resp = defaultAnswer.unauthorized;
                                             _b.label = 3;
                                         case 3: return [2 /*return*/];
                                     }
                                 });
                             }); })["catch"](function (err) {
-                                resp = { code: 400, data: err.toString() };
+                                resp = defaultAnswer.internalError;
                             })];
                     case 1:
                         _a.sent();
@@ -214,13 +218,13 @@ var MongoDB = /** @class */ (function () {
                                             resp = (_e.data = _f.sent(), _e);
                                             return [3 /*break*/, 7];
                                         case 6:
-                                            resp = { code: 401, data: "Only adm" };
+                                            resp = defaultAnswer.unauthorized;
                                             _f.label = 7;
                                         case 7: return [2 /*return*/];
                                     }
                                 });
                             }); })["catch"](function (err) {
-                                resp = { code: 400, data: err.toString() };
+                                resp = defaultAnswer.internalError;
                             })];
                     case 1:
                         _a.sent();
@@ -247,13 +251,13 @@ var MongoDB = /** @class */ (function () {
                                             resp = (_a.data = _b.sent(), _a);
                                             return [3 /*break*/, 3];
                                         case 2:
-                                            resp = { code: 401, data: "Only adm" };
+                                            resp = defaultAnswer.unauthorized;
                                             _b.label = 3;
                                         case 3: return [2 /*return*/];
                                     }
                                 });
                             }); })["catch"](function (err) {
-                                resp = { code: 400, data: err.toString() };
+                                resp = defaultAnswer.internalError;
                             })];
                     case 1:
                         _a.sent();
@@ -282,13 +286,13 @@ var MongoDB = /** @class */ (function () {
                                             resp = (_a.data = _b.sent(), _a);
                                             return [3 /*break*/, 3];
                                         case 2:
-                                            resp = { code: 401, data: "Only adm" };
+                                            resp = defaultAnswer.unauthorized;
                                             _b.label = 3;
                                         case 3: return [2 /*return*/];
                                     }
                                 });
                             }); })["catch"](function (err) {
-                                resp = { code: 400, data: err.toString() };
+                                resp = defaultAnswer.internalError;
                             })];
                     case 1:
                         authConfirmed = _a.sent();
@@ -317,13 +321,13 @@ var MongoDB = /** @class */ (function () {
                                             resp = (_a.data = _b.sent(), _a);
                                             return [3 /*break*/, 3];
                                         case 2:
-                                            resp = { code: 401, data: "Only adm" };
+                                            resp = defaultAnswer.unauthorized;
                                             _b.label = 3;
                                         case 3: return [2 /*return*/];
                                     }
                                 });
                             }); })["catch"](function (err) {
-                                resp = { code: 400, data: err.toString() };
+                                resp = defaultAnswer.internalError;
                             })];
                     case 1:
                         _a.sent();
@@ -359,19 +363,19 @@ var MongoDB = /** @class */ (function () {
                                                         }
                                                     });
                                                 }); })["catch"](function (err) {
-                                                    resp = { code: 409, data: 'Deu ruim' };
+                                                    resp = defaultAnswer.internalError;
                                                 })];
                                         case 1:
                                             _a.sent();
                                             return [3 /*break*/, 3];
                                         case 2:
-                                            resp = { code: 401, data: "Only adm" };
+                                            resp = defaultAnswer.unauthorized;
                                             _a.label = 3;
                                         case 3: return [2 /*return*/];
                                     }
                                 });
                             }); })["catch"](function (err) {
-                                resp = { code: 400, data: err.toString() };
+                                resp = defaultAnswer.internalError;
                             })];
                     case 1:
                         _a.sent();
@@ -400,13 +404,13 @@ var MongoDB = /** @class */ (function () {
                                             resp = (_a.data = _b.sent(), _a);
                                             return [3 /*break*/, 3];
                                         case 2:
-                                            resp = { code: 401, data: "Only adm" };
+                                            resp = defaultAnswer.unauthorized;
                                             _b.label = 3;
                                         case 3: return [2 /*return*/];
                                     }
                                 });
                             }); })["catch"](function (err) {
-                                resp = { code: 400, data: err.toString() };
+                                resp = defaultAnswer.internalError;
                             })];
                     case 1:
                         _a.sent();
@@ -431,7 +435,7 @@ var MongoDB = /** @class */ (function () {
                         _a.trys.push([3, 5, , 6]);
                         return [4 /*yield*/, bcrypt_1.compare(password, resp[0].password).then(function (isPasswordOk) {
                                 if (isPasswordOk) {
-                                    return { code: 202, data: new User(resp[0].name, resp[0].id, resp[0].authorization, '') };
+                                    return { code: 200, data: new User(resp[0].name, resp[0].id, resp[0].authorization, '') };
                                 }
                                 else {
                                     return { code: 401, data: new User('', '', '', '') };
@@ -442,7 +446,7 @@ var MongoDB = /** @class */ (function () {
                         return [2 /*return*/, user];
                     case 5:
                         error_1 = _a.sent();
-                        return [2 /*return*/, { code: 400, data: new User('', '', '', '') }];
+                        return [2 /*return*/, { code: 500, data: new User('', '', '', '') }];
                     case 6: return [2 /*return*/];
                 }
             });
@@ -501,10 +505,10 @@ var MongoDB = /** @class */ (function () {
                                         "clients": 1,
                                         "moderator._id": 1,
                                         "moderator.name": 1
-                                    } }, { $match: { date: { $gt: new Date() } } }]).sort({ date: 1 }).then(function (data) { return data; })];
+                                    } }, { $match: { date: { $gt: new Date() } } }]).sort({ date: 1 }).then(function (data) { return { code: 200, data: data }; })["catch"](function () { return defaultAnswer.internalError; })];
                     case 1:
                         respM = _a.sent();
-                        return [2 /*return*/, { code: 200, data: respM }];
+                        return [2 /*return*/, respM];
                 }
             });
         });
@@ -544,7 +548,7 @@ var MongoDB = /** @class */ (function () {
                         if (callData.date) {
                             data['date'] = callData.date;
                         }
-                        return [4 /*yield*/, CallModel.create(data).then(function (data) { return { code: 201, data: data }; })["catch"](function (err) { return { code: 404, data: err.toString() }; })];
+                        return [4 /*yield*/, CallModel.create(data).then(function (data) { return { code: 201, data: data }; })["catch"](function (err) { return defaultAnswer.internalError; })];
                     case 1:
                         resp = _a.sent();
                         return [2 /*return*/, resp];
@@ -600,7 +604,7 @@ var MongoDB = /** @class */ (function () {
                         _a.label = 5;
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        resp = { code: 423, data: "The call is full" };
+                        resp = { code: 409, data: "The call is full" };
                         _a.label = 7;
                     case 7: return [2 /*return*/, resp];
                 }
@@ -632,13 +636,13 @@ var MongoDB = /** @class */ (function () {
                                             }
                                             return [3 /*break*/, 3];
                                         case 2:
-                                            resp = { code: 423, data: "Data don't match" };
+                                            resp = defaultAnswer.unauthorized;
                                             _a.label = 3;
                                         case 3: return [2 /*return*/];
                                     }
                                 });
                             }); })["catch"](function (err) {
-                                console.log(err);
+                                resp = defaultAnswer.internalError;
                             })];
                     case 1:
                         authConfirmed = _a.sent();

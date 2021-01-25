@@ -56,13 +56,13 @@ var SignupHandler = /** @class */ (function () {
                                 if (response.data.approved) {
                                     var notification = new send_1["default"]();
                                     notification.ConfirmSignup(response.data.email);
-                                    return { approved: true, code: response.code, name: response.data.name, authToken: jwt.sign({ name: response.data.name, id: response.data.id, authorization: response.data.authorization }, process.env.AUTHENTICATION_KEY, { expiresIn: '1h' }) };
+                                    return { code: response.code, name: response.data.name, authToken: jwt.sign({ name: response.data.name, id: response.data.id, authorization: response.data.authorization }, process.env.AUTHENTICATION_KEY, { expiresIn: '1h' }) };
                                 }
                                 else {
-                                    return { approved: false, code: response.code, name: '', authToken: '', message: 'Email já utilizado' };
+                                    return { code: response.code, name: '', authToken: '', message: 'Email já utilizado' };
                                 }
                             })["catch"](function (err) {
-                                return { approved: false, code: 401, name: '', authToken: '', message: err.toString() };
+                                return { code: 401, name: '', authToken: '', message: err.toString() };
                             })];
                     case 1:
                         resp = _b.sent();

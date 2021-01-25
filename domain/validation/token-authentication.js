@@ -15,7 +15,7 @@ var TokenAuthenticator = /** @class */ (function () {
     TokenAuthenticator.prototype.verifyToken = function (req) {
         try {
             var data = jwt.verify(req.headers.authtoken, process.env.AUTHENTICATION_KEY);
-            return { code: 202, data: new User(data.name, data.id, data.authorization) };
+            return { code: 200, data: new User(data.name, data.id, data.authorization) };
         }
         catch (error) {
             return { code: 401, data: new User("", "", "") };

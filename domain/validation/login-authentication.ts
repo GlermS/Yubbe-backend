@@ -14,8 +14,7 @@ class LoginAuthentication{
         let database = new MongoDB();
 
         const data = await this.verifyData(database, email, password);
-
-        if (data.code===202){
+        if (data.code===200){
             return {code:data.code, authToken: jwt.sign({name:data.data.name, id: data.data.id, authorization: data.data.authorization}, process.env.AUTHENTICATION_KEY, {expiresIn:'24h'})}
         }else{
             return {code:data.code, authToken: ''}
